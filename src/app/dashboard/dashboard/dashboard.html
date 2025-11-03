@@ -1,0 +1,156 @@
+<!-- src/app/dashboard/dashboard.component.html -->
+<div class="dashboard-wrapper">
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <!-- Logo Section -->
+    <div class="logo-section">
+      <div class="logo">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">User Hub</h3>
+    </div>
+
+    <!-- Menu Items -->
+    <nav class="sidebar-menu">
+      <a 
+        href="javascript:void(0)" 
+        class="menu-item"
+        [class.active]="activeMenu === 'dashboard'"
+        (click)="setActiveMenu('dashboard')"
+      >
+        <i class="bi bi-grid-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Dashboard</span>
+      </a>
+
+      <a 
+        href="javascript:void(0)" 
+        class="menu-item"
+        [class.active]="activeMenu === 'users'"
+        (click)="setActiveMenu('users')"
+      >
+        <i class="bi bi-people-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Users</span>
+      </a>
+
+      <a 
+        href="javascript:void(0)" 
+        class="menu-item"
+        [class.active]="activeMenu === 'report'"
+        (click)="setActiveMenu('report')"
+      >
+        <i class="bi bi-file-earmark-text-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Report</span>
+      </a>
+
+      <a 
+        href="javascript:void(0)" 
+        class="menu-item"
+        [class.active]="activeMenu === 'feedback'"
+        (click)="setActiveMenu('feedback')"
+      >
+        <i class="bi bi-chat-left-text-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Feedback Management</span>
+      </a>
+
+      <a 
+        href="javascript:void(0)" 
+        class="menu-item"
+        [class.active]="activeMenu === 'setting'"
+        (click)="setActiveMenu('setting')"
+      >
+        <i class="bi bi-gear-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Setting</span>
+      </a>
+    </nav>
+
+    <!-- Logout Button -->
+    <button class="logout-btn" (click)="onLogout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!isSidebarCollapsed">Log Out</span>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="top-bar-right">
+        <!-- Notification Badge -->
+        <div class="notification-badge">
+          <i class="bi bi-bell-fill"></i>
+          <span class="badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+        </div>
+
+        <!-- User Profile -->
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name={{ userName }}&background=3b82f6&color=fff" alt="User">
+          <span class="user-name">{{ userName }}</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+      
+      <!-- Statistics Cards -->
+      <div class="stats-row">
+        
+        <!-- Total Users Card -->
+        <div class="stat-card total-users">
+          <div class="stat-icon green">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-label">Total Users</h3>
+            <p class="stat-value">{{ totalUsers.toLocaleString() }}</p>
+          </div>
+        </div>
+
+        <!-- Monthly Users Card -->
+        <div class="stat-card monthly-users">
+          <div class="stat-icon yellow">
+            <i class="bi bi-person-fill"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-label">Monthly Users</h3>
+            <p class="stat-value">{{ monthlyUsers.toLocaleString() }}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Monthly Turnover Chart -->
+      <div class="chart-card">
+        <h3 class="chart-title">Monthly Turnover</h3>
+        <div class="chart-container">
+          <div class="chart-wrapper">
+            <div class="chart-y-axis">
+              <span>100%</span>
+              <span>75%</span>
+              <span>50%</span>
+              <span>25%</span>
+              <span>0%</span>
+            </div>
+            <div class="chart-bars">
+              <div 
+                class="bar-wrapper" 
+                *ngFor="let value of monthlyTurnoverData; let i = index"
+              >
+                <div class="bar" [style.height]="getBarHeight(value)"></div>
+                <span class="bar-label">{{ chartMonths[i] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
