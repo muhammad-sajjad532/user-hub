@@ -80,10 +80,14 @@ export class Login {
     
     if (success) {
       console.log('Login successful');
-      alert('Login successful! Redirecting to dashboard...');
+      alert('Login successful! Redirecting...');
       
-      // Navigate to dashboard
-      this.router.navigate(['/dashboard']).then(
+      // Check if there's a redirect URL (from auth guard)
+      const redirectUrl = sessionStorage.getItem('redirectUrl') || '/dashboard';
+      sessionStorage.removeItem('redirectUrl');
+      
+      // Navigate to redirect URL or dashboard
+      this.router.navigate([redirectUrl]).then(
         (success) => console.log('Navigation success:', success),
         (error) => console.error('Navigation error:', error)
       );

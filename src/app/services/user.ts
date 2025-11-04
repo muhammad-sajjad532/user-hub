@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { StorageService } from './storage';
+import { tap, catchError } from 'rxjs/operators';
 
 /**
  * User Profile interface
@@ -13,69 +14,48 @@ export interface UserProfile {
 }
 
 /**
- * User Service
- * Manages user profiles with localStorage persistence
- * Uses BehaviorSubject for reactive data updates
+ * User Service with JSON Server API
+ * Now uses real HTTP requests instead of localStorage
+ * Data persists permanently in db.json file
  */
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  // Storage key for user profiles
-  private readonly PROFILES_KEY = 'userProfiles';
+  // API endpoint
+  private readonly API_URL = 'http://localhost:3000/profiles';
 
   // BehaviorSubject to track profiles state
-  // Components subscribe to this for real-time updates
   private profilesSubject: BehaviorSubject<UserProfile[]>;
   public profiles$: Observable<UserProfile[]>;
 
-  // Sample initial data (only used if no data in localStorage)
-  private readonly INITIAL_PROFILES: UserProfile[] = [
-    { id: 1, profileName: 'Profile-1', description: 'xyz', creationDate: '20-08-2025' },
-    { id: 2, profileName: 'Profile-2', description: 'xyz', creationDate: '21-08-2025' },
-    { id: 3, profileName: 'Profile-3', description: 'xyz', creationDate: '22-08-2025' },
-    { id: 4, profileName: 'Profile-4', description: 'xyz', creationDate: '23-08-2025' },
-    { id: 5, profileName: 'Profile-5', description: 'xyz', creationDate: '24-08-2025' },
-    { id: 6, profileName: 'Profile-6', description: 'abc', creationDate: '25-08-2025' },
-    { id: 7, profileName: 'Profile-7', description: 'def', creationDate: '26-08-2025' },
-    { id: 8, profileName: 'Profile-8', description: 'ghi', creationDate: '27-08-2025' },
-    { id: 9, profileName: 'Profile-9', description: 'jkl', creationDate: '28-08-2025' },
-    { id: 10, profileName: 'Profile-10', description: 'mno', creationDate: '29-08-2025' },
-  ];
-
-  constructor(private storageService: StorageService) {
-    // Load profiles from localStorage or use initial data
-    const storedProfiles = this.loadProfiles();
-    this.profilesSubject = new BehaviorSubject<UserProfile[]>(storedProfiles);
+  constructor(private http: HttpClient) {
+    // Initialize with empty array
+    this.profilesSubject = new BehaviorSubject<UserProfile[]>([]);
     this.profiles$ = this.profilesSubject.asObservable();
+
+    // Load profiles from API on service initialization
+    this.loadProfiles();
   }
 
   /**
-   * Load profiles from localStorage
-   * Returns initial data if nothing stored
+   * Load all profiles from API
    */
-  private loadProfiles(): UserProfile[] {
-    const stored = this.storageService.get<UserProfile[]>(this.PROFILES_KEY);
-    
-    // If no data in localStorage, save and return initial data
-    if (!stored || stored.length === 0) {
-      this.storageService.set(this.PROFILES_KEY, this.INITIAL_PROFILES);
-      return [...this.INITIAL_PROFILES];
-    }
-    
-    return stored;
+  loadProfiles(): void {
+    this.http.get<UserProfile[]>(this.API_URL).pipe(
+      tap(profiles => {
+        console.log('Profiles loaded from API:', profiles);
+        this.profilesSubject.next(profiles);
+      }),
+      catchError(error => {
+        console.error('Error loading profiles:', error);
+        return [];
+      })
+    ).subscribe();
   }
 
   /**
-   * Save profiles to localStorage
-   */
-  private saveProfiles(profiles: UserProfile[]): void {
-    this.storageService.set(this.PROFILES_KEY, profiles);
-    this.profilesSubject.next(profiles);
-  }
-
-  /**
-   * Get all profiles (synchronous)
+   * Get all profiles (synchronous from cache)
    */
   getAllProfiles(): UserProfile[] {
     return this.profilesSubject.value;
@@ -89,76 +69,72 @@ export class UserService {
   }
 
   /**
-   * Add new profile
-   * @param profile - Profile data (without ID)
-   * @returns Created profile with ID
+   * Add new profile via API
+   * @param profile - Profile data (without ID, server generates it)
+   * @returns Observable of created profile
    */
-  addProfile(profile: Omit<UserProfile, 'id'>): UserProfile {
-    const profiles = this.getAllProfiles();
-    
-    // Generate new ID
-    const newId = profiles.length > 0 
-      ? Math.max(...profiles.map(p => p.id)) + 1 
-      : 1;
-
-    const newProfile: UserProfile = {
-      id: newId,
-      ...profile
-    };
-
-    // Add to array and save
-    const updatedProfiles = [...profiles, newProfile];
-    this.saveProfiles(updatedProfiles);
-
-    return newProfile;
+  addProfile(profile: Omit<UserProfile, 'id'>): Observable<UserProfile> {
+    return this.http.post<UserProfile>(this.API_URL, profile).pipe(
+      tap(newProfile => {
+        console.log('Profile added:', newProfile);
+        // Update local cache
+        const profiles = this.getAllProfiles();
+        this.profilesSubject.next([...profiles, newProfile]);
+      }),
+      catchError(error => {
+        console.error('Error adding profile:', error);
+        throw error;
+      })
+    );
   }
 
   /**
-   * Update existing profile
+   * Update existing profile via API
    * @param id - Profile ID
    * @param updates - Fields to update
-   * @returns Updated profile or undefined if not found
+   * @returns Observable of updated profile
    */
-  updateProfile(id: number, updates: Partial<UserProfile>): UserProfile | undefined {
-    const profiles = this.getAllProfiles();
-    const index = profiles.findIndex(p => p.id === id);
-
-    if (index === -1) {
-      return undefined;
-    }
-
-    // Update profile
-    const updatedProfile = { ...profiles[index], ...updates, id }; // Keep original ID
-    profiles[index] = updatedProfile;
-
-    // Save changes
-    this.saveProfiles(profiles);
-
-    return updatedProfile;
+  updateProfile(id: number, updates: Partial<UserProfile>): Observable<UserProfile> {
+    return this.http.patch<UserProfile>(`${this.API_URL}/${id}`, updates).pipe(
+      tap(updatedProfile => {
+        console.log('Profile updated:', updatedProfile);
+        // Update local cache
+        const profiles = this.getAllProfiles();
+        const index = profiles.findIndex(p => p.id === id);
+        if (index !== -1) {
+          profiles[index] = updatedProfile;
+          this.profilesSubject.next([...profiles]);
+        }
+      }),
+      catchError(error => {
+        console.error('Error updating profile:', error);
+        throw error;
+      })
+    );
   }
 
   /**
-   * Delete profile
+   * Delete profile via API
    * @param id - Profile ID
-   * @returns true if deleted, false if not found
+   * @returns Observable of void
    */
-  deleteProfile(id: number): boolean {
-    const profiles = this.getAllProfiles();
-    const filteredProfiles = profiles.filter(p => p.id !== id);
-
-    // Check if anything was deleted
-    if (filteredProfiles.length === profiles.length) {
-      return false;
-    }
-
-    // Save changes
-    this.saveProfiles(filteredProfiles);
-
-    return true;
+  deleteProfile(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/${id}`).pipe(
+      tap(() => {
+        console.log('Profile deleted:', id);
+        // Update local cache
+        const profiles = this.getAllProfiles();
+        this.profilesSubject.next(profiles.filter(p => p.id !== id));
+      }),
+      catchError(error => {
+        console.error('Error deleting profile:', error);
+        throw error;
+      })
+    );
   }
 
   /**
-   * Search profiles by name
+   * Search profiles by name (client-side filtering)
    * @param query - Search query
    * @returns Filtered profiles
    */

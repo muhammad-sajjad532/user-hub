@@ -125,28 +125,16 @@
 
       </div>
 
-      <!-- Monthly Turnover Chart -->
+      <!-- Monthly Turnover Chart with Chart.js -->
       <div class="chart-card">
         <h3 class="chart-title">Monthly Turnover</h3>
-        <div class="chart-container">
-          <div class="chart-wrapper">
-            <div class="chart-y-axis">
-              <span>100%</span>
-              <span>75%</span>
-              <span>50%</span>
-              <span>25%</span>
-              <span>0%</span>
-            </div>
-            <div class="chart-bars">
-              <div 
-                class="bar-wrapper" 
-                *ngFor="let value of monthlyTurnoverData; let i = index"
-              >
-                <div class="bar" [style.height]="getBarHeight(value)"></div>
-                <span class="bar-label">{{ chartMonths[i] }}</span>
-              </div>
-            </div>
-          </div>
+        <div class="chart-container-wrapper">
+          <canvas 
+            baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+          </canvas>
         </div>
       </div>
 

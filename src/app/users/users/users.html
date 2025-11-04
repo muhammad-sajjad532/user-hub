@@ -98,7 +98,7 @@
     <div class="users-container">
       <!-- Header Section -->
       <div class="users-header">
-        <h2 class="page-title">Profile</h2>
+        <h2 class="page-title">Users</h2>
         
         <div class="header-actions">
           <!-- Search Box with Autocomplete -->
@@ -339,3 +339,44 @@
   </div>
 
 </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
+    <div class="success-modal" (click)="$event.stopPropagation()">
+      <div class="success-icon-circle">
+        <i class="bi bi-check-lg"></i>
+      </div>
+      
+      <h3 class="success-title">Success!</h3>
+      
+      <p class="success-message">{{ successMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+    <div class="delete-modal" (click)="$event.stopPropagation()">
+      <div class="delete-icon-circle">
+        <i class="bi bi-trash-fill"></i>
+      </div>
+      
+      <h3 class="delete-title">Delete</h3>
+      
+      <p class="delete-message">
+        Are you sure you want to delete this record?<br>
+        This action cannot be undone.
+      </p>
+      
+      <div class="delete-actions">
+        <button class="btn-cancel" (click)="closeDeleteModal()">
+          <i class="bi bi-x-circle"></i>
+          Cancel
+        </button>
+        <button class="btn-delete-confirm" (click)="confirmDelete()">
+          <i class="bi bi-trash-fill"></i>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+

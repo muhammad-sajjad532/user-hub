@@ -318,7 +318,7 @@
   margin: 0;
 }
 
-/* Chart Card */
+/* Chart Card with Chart.js */
 .chart-card {
   background: white;
   border-radius: 16px;
@@ -333,69 +333,14 @@
   margin: 0 0 30px 0;
 }
 
-.chart-container {
-  overflow-x: auto;
-}
-
-.chart-wrapper {
-  display: flex;
-  gap: 25px;
-  min-width: 800px;
-}
-
-.chart-y-axis {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 15px 0;
-  color: #9ca3af;
-  font-size: 13px;
-  min-width: 45px;
-  text-align: right;
-}
-
-.chart-bars {
-  flex: 1;
-  display: flex;
-  gap: 25px;
-  align-items: flex-end;
-  padding: 15px 0;
-  border-left: 2px solid #e5e7eb;
-  border-bottom: 2px solid #e5e7eb;
-  padding-left: 20px;
-  height: 300px;
-}
-
-.bar-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  min-width: 45px;
-  height: 100%;
-}
-
-.bar {
-  width: 100%;
-  background: linear-gradient(180deg, #1e3a5f 0%, #003366 100%);
-  border-radius: 8px 8px 0 0;
-  transition: all 0.3s ease;
-  min-height: 20px;
+.chart-container-wrapper {
   position: relative;
+  height: 350px;
+  width: 100%;
 }
 
-.bar:hover {
-  background: linear-gradient(180deg, #2d4a6f 0%, #004477 100%);
-  transform: scaleY(1.05);
-  box-shadow: 0 -4px 12px rgba(0, 51, 102, 0.3);
-}
-
-.bar-label {
-  color: #6b7280;
-  font-size: 13px;
-  font-weight: 500;
+.chart-container-wrapper canvas {
+  max-height: 350px;
 }
 
 /* Responsive Design */

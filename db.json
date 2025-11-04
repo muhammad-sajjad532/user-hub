@@ -1,0 +1,102 @@
+{
+  "profiles": [
+    {
+      "id": "7",
+      "profileName": "Random Developer",
+      "description": "MEAN developer",
+      "creationDate": "26-08-2025"
+    },
+    {
+      "id": "8",
+      "profileName": "Random user",
+      "description": "Angular Developer",
+      "creationDate": "27-08-2025"
+    },
+    {
+      "id": "9",
+      "profileName": "Hamid",
+      "description": "Angular Developer",
+      "creationDate": "28-08-2025"
+    },
+    {
+      "id": "10",
+      "profileName": "Random",
+      "description": "Python Developer",
+      "creationDate": "29-08-2025"
+    },
+    {
+      "id": "a58b",
+      "profileName": "sajjad",
+      "description": "Front-end web developer",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "8adc",
+      "profileName": "Owais",
+      "description": "Full Stack Developer/Mern",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "db8f",
+      "profileName": "Shoaib Rehman",
+      "description": "Mean/Mern",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "c35a",
+      "profileName": "Muhammad Rizwan",
+      "description": "Backend Developer",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "72a1",
+      "profileName": "Muhammad Shahab",
+      "description": "Student",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "de31",
+      "profileName": "Waleed ur Rehman",
+      "description": "Backend Developer",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "18c0",
+      "profileName": "Rizwan yaqoob",
+      "description": "Backend Developer(java)",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "a0b6",
+      "profileName": "Ahmad Ali Rabbani",
+      "description": "React Developer",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "827a",
+      "profileName": "Sahil",
+      "description": "Digital Marketer",
+      "creationDate": "04-11-2025"
+    },
+    {
+      "id": "7978",
+      "profileName": "unknown user",
+      "description": "Vue developer",
+      "creationDate": "04-11-2025"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "email": "admin@userhub.com",
+      "password": "admin123",
+      "name": "Admin User"
+    },
+    {
+      "id": "2",
+      "email": "test@test.com",
+      "password": "test123",
+      "name": "Test User"
+    }
+  ]
+}

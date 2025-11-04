@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, Subscription, of } from 'rxjs';
@@ -73,7 +73,8 @@ export class Users implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   /**
@@ -246,25 +247,38 @@ export class Users implements OnInit, OnDestroy {
     }
 
     if (this.modalMode === 'add') {
-      // Add new profile via service
+      // Add new profile via API
       this.userService.addProfile({
         profileName: this.formData.profileName,
         description: this.formData.description,
         creationDate: this.formData.creationDate
+      }).subscribe({
+        next: (response) => {
+          console.log('✅ Profile added successfully:', response);
+          this.closeModal();
+          this.showSuccessMessage('Profile added successfully!');
+        },
+        error: (error) => {
+          console.error('❌ Error adding profile:', error);
+          alert('Failed to add profile. Please try again.');
+        }
       });
-      this.closeModal();
-      this.showSuccessMessage('Profile added successfully!');
     } else {
-      // Update existing profile via service
-      const updated = this.userService.updateProfile(this.formData.id, {
+      // Update existing profile via API
+      this.userService.updateProfile(this.formData.id, {
         profileName: this.formData.profileName,
         description: this.formData.description
+      }).subscribe({
+        next: (response) => {
+          console.log('✅ Profile updated successfully:', response);
+          this.closeModal();
+          this.showSuccessMessage('Profile updated successfully!');
+        },
+        error: (error) => {
+          console.error('❌ Error updating profile:', error);
+          alert('Failed to update profile. Please try again.');
+        }
       });
-
-      if (updated) {
-        this.closeModal();
-        this.showSuccessMessage('Profile updated successfully!');
-      }
     }
   }
 
@@ -282,12 +296,18 @@ export class Users implements OnInit, OnDestroy {
   confirmDelete(): void {
     if (this.userToDelete) {
       const profileName = this.userToDelete.profileName;
-      const deleted = this.userService.deleteProfile(this.userToDelete.id);
-
-      if (deleted) {
-        this.closeDeleteModal();
-        this.showSuccessMessage(`${profileName} deleted successfully!`);
-      }
+      
+      this.userService.deleteProfile(this.userToDelete.id).subscribe({
+        next: () => {
+          this.closeDeleteModal();
+          this.showSuccessMessage(`${profileName} deleted successfully!`);
+        },
+        error: (error) => {
+          console.error('Error deleting profile:', error);
+          alert('Failed to delete profile. Please try again.');
+          this.closeDeleteModal();
+        }
+      });
     }
   }
 
@@ -319,12 +339,20 @@ export class Users implements OnInit, OnDestroy {
    * Auto-closes after 2 seconds
    */
   showSuccessMessage(message: string): void {
+    console.log('🎉 Showing success message:', message);
     this.successMessage = message;
     this.showSuccessModal = true;
+    
+    // Manually trigger change detection for zoneless mode
+    this.cdr.detectChanges();
+    
+    console.log('showSuccessModal set to:', this.showSuccessModal);
 
+    // Auto-close after 3 seconds
     setTimeout(() => {
       this.closeSuccessModal();
-    }, 2000);
+      this.cdr.detectChanges(); // Trigger change detection on close too
+    }, 3000);
   }
 
   /**
@@ -333,6 +361,7 @@ export class Users implements OnInit, OnDestroy {
   closeSuccessModal(): void {
     this.showSuccessModal = false;
     this.successMessage = '';
+    this.cdr.detectChanges(); // Trigger change detection
   }
 
   /**

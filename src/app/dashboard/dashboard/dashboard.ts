@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
 })
@@ -22,9 +24,92 @@ export class Dashboard {
   totalUsers: number = 50000;
   monthlyUsers: number = 3500;
 
-  // Monthly turnover chart data (different heights for each month)
-  monthlyTurnoverData: number[] = [45, 25, 75, 40, 30, 80, 35, 75, 40, 60, 35, 55];
-  chartMonths: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  // Chart.js configuration for Monthly Turnover
+  public barChartType: ChartType = 'bar';
+  
+  public barChartData: ChartConfiguration['data'] = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Monthly Turnover',
+        data: [45000, 25000, 75000, 40000, 30000, 80000, 35000, 75000, 40000, 60000, 35000, 55000],
+        backgroundColor: 'rgba(30, 58, 95, 0.8)', // Dark blue matching your design
+        borderColor: 'rgba(30, 58, 95, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        hoverBackgroundColor: 'rgba(0, 51, 102, 0.9)',
+        hoverBorderColor: 'rgba(0, 51, 102, 1)',
+      }
+    ]
+  };
+
+  public barChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false // Hide legend since we only have one dataset
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: 'rgba(30, 58, 95, 1)',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: false,
+        callbacks: {
+          label: (context) => {
+            const value = context.parsed.y;
+            if (value !== null && value !== undefined) {
+              return `Turnover: $${value.toLocaleString()}`;
+            }
+            return '';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 12,
+            weight: 500
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(229, 231, 235, 0.5)'
+        },
+        border: {
+          display: false
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 12
+          },
+          callback: (value) => {
+            if (typeof value === 'number') {
+              return '$' + (value / 1000) + 'K';
+            }
+            return value;
+          }
+        }
+      }
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeInOutQuart'
+    }
+  };
 
   constructor(
     private router: Router,
@@ -59,10 +144,4 @@ export class Dashboard {
     // Logout via auth service (handles everything)
     this.authService.logout();
   }
-
-  // Get chart bar height based on value
-  getBarHeight(value: number): string {
-    return `${value}%`;
-  }
-
 }
