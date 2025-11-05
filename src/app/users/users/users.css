@@ -8,7 +8,7 @@
 /* Sidebar */
 .sidebar {
   width: 210px;
-  background: linear-gradient(180deg, #003366 0%, #001a33 100%);
+  background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);
   color: white;
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@
   justify-content: center;
   margin: 0 auto;
   font-size: 40px;
-  color: #003366;
+  color: #6b7280;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -292,8 +292,8 @@
 }
 
 .search-input:focus {
-  border-color: #003366;
-  box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+  border-color: #6b7280;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.1);
 }
 
 /* Clear Search Button */
@@ -400,7 +400,7 @@
 
 /* Add New Profile Button */
 .btn-add-profile {
-  background: #003366;
+  background: #6b7280;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -415,9 +415,9 @@
 }
 
 .btn-add-profile:hover {
-  background: #004477;
+  background: #4b5563;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .btn-add-profile i {
@@ -566,9 +566,9 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #003366;
+  background: #6b7280;
   color: white;
-  border-color: #003366;
+  border-color: #6b7280;
 }
 
 .pagination-btn:disabled {
@@ -977,14 +977,14 @@ textarea.form-control {
 }
 
 .btn-primary {
-  background: #003366;
+  background: #6b7280;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #004477;
+  background: #4b5563;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .btn-secondary {

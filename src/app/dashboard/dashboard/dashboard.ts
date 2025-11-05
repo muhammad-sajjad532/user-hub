@@ -37,12 +37,12 @@ export class Dashboard {
       {
         label: 'Monthly Turnover',
         data: [45000, 25000, 75000, 40000, 30000, 80000, 35000, 75000, 40000, 60000, 35000, 55000],
-        backgroundColor: 'rgba(30, 58, 95, 0.8)', // Dark blue matching your design
-        borderColor: 'rgba(30, 58, 95, 1)',
+        backgroundColor: 'rgba(107, 114, 128, 0.8)', // Gray matching login button
+        borderColor: 'rgba(107, 114, 128, 1)',
         borderWidth: 2,
         borderRadius: 8,
-        hoverBackgroundColor: 'rgba(0, 51, 102, 0.9)',
-        hoverBorderColor: 'rgba(0, 51, 102, 1)',
+        hoverBackgroundColor: 'rgba(75, 85, 99, 0.9)',
+        hoverBorderColor: 'rgba(75, 85, 99, 1)',
       }
     ]
   };
