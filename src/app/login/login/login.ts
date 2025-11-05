@@ -75,25 +75,32 @@ export class Login {
       return;
     }
     
-    // Login via AuthService
-    const success = this.authService.login(this.email, this.password);
-    
-    if (success) {
-      console.log('Login successful');
-      alert('Login successful! Redirecting...');
-      
-      // Check if there's a redirect URL (from auth guard)
-      const redirectUrl = sessionStorage.getItem('redirectUrl') || '/dashboard';
-      sessionStorage.removeItem('redirectUrl');
-      
-      // Navigate to redirect URL or dashboard
-      this.router.navigate([redirectUrl]).then(
-        (success) => console.log('Navigation success:', success),
-        (error) => console.error('Navigation error:', error)
-      );
-    } else {
-      alert('Login failed. Please check your credentials.');
-    }
+    // Login via AuthService (now returns Observable)
+    this.authService.login(this.email, this.password).subscribe({
+      next: (user) => {
+        if (user) {
+          console.log('✅ Login successful');
+          alert(`Welcome ${user.name}! You are logged in as ${user.role.toUpperCase()}.`);
+          
+          // Check if there's a redirect URL (from auth guard)
+          const redirectUrl = sessionStorage.getItem('redirectUrl') || '/dashboard';
+          sessionStorage.removeItem('redirectUrl');
+          
+          // Navigate to redirect URL or dashboard
+          this.router.navigate([redirectUrl]).then(
+            (success) => console.log('Navigation success:', success),
+            (error) => console.error('Navigation error:', error)
+          );
+        } else {
+          console.log('❌ Login failed');
+          alert('Login failed. Invalid email or password.');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Login error:', error);
+        alert('Login error. Please try again.');
+      }
+    });
   }
 
   // Navigate to forgot password page

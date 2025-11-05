@@ -1,211 +1,159 @@
-# 🚀 Quick Reference Guide
+# 🚀 Quick Reference Card
 
-## Common Commands
+## Test Accounts
 
-### Development
+| Role | Email | Password | Access Level |
+|------|-------|----------|--------------|
+| 🔴 **Admin** | admin@userhub.com | admin123 | Full access |
+| 🟠 **Manager** | manager@userhub.com | manager123 | High access |
+| 🔵 **User** | user@userhub.com | user123 | Standard access |
+| ⚫ **Guest** | guest@userhub.com | guest123 | Read-only |
+
+---
+
+## Access Matrix
+
+| Page | Guest | User | Manager | Admin |
+|------|-------|------|---------|-------|
+| Dashboard | ✅ | ✅ | ✅ | ✅ |
+| Users | ❌ | ✅ | ✅ | ✅ |
+
+---
+
+## Start Commands
+
 ```bash
-npm start              # Start dev server (localhost:4200)
-npm run build          # Build for production
-npm test               # Run tests
+# Terminal 1: API Server
+npm run api
+
+# Terminal 2: Angular App
+ng serve
 ```
 
-### Git
-```bash
-git status             # Check changes
-git add .              # Stage all changes
-git commit -m "msg"    # Commit with message
-git push               # Push to GitHub
+Open: `http://localhost:4200`
+
+---
+
+## File Structure
+
+```
+src/app/
+├── guards/
+│   ├── auth-guard.ts          # Basic authentication
+│   ├── role-guard.ts          # Role-based access
+│   └── permission-guard.ts    # Permission-based access
+├── interceptors/
+│   ├── auth-interceptor.ts    # Add auth headers
+│   ├── error-interceptor.ts   # Handle HTTP errors
+│   └── loading-interceptor.ts # Show loading spinner
+└── services/
+    └── auth.ts                # Authentication service
 ```
 
 ---
 
-## Project Structure Quick Look
+## Key Features
 
-```
-services/
-  ├── auth.ts          → Login/Logout
-  ├── user.ts          → CRUD operations
-  └── storage.ts       → LocalStorage wrapper
-
-components/
-  ├── login/           → Login page
-  ├── dashboard/       → Stats & charts
-  └── users/           → User management (main)
-```
+✅ **Role-Based Access Control (RBAC)**  
+✅ **API-Based Authentication**  
+✅ **Reactive State Management (RxJS)**  
+✅ **HTTP Interceptors Chain**  
+✅ **Route Guards (3 types)**  
+✅ **Visual Role Indicators**  
+✅ **Error Handling & User Feedback**  
 
 ---
 
-## Key Code Snippets
+## Demo Script
 
-### Using AuthService
+1. Login as **guest** → Try Users page → **BLOCKED** ❌
+2. Logout → Login as **user** → Access Users page → **ALLOWED** ✅
+3. Show role badge: GUEST (gray) → USER (blue)
+
+**Time: 30 seconds**
+
+---
+
+## Code Highlights
+
+### User with Role & Permissions
 ```typescript
-// In component constructor
-constructor(private authService: AuthService) {}
-
-// Login
-this.authService.login(email, password);
-
-// Logout
-this.authService.logout();
-
-// Check if authenticated
-if (this.authService.isAuthenticated()) { }
-
-// Get user name
-const name = this.authService.getUserName();
-
-// Subscribe to auth state
-this.authService.currentUser$.subscribe(user => {
-  console.log('User changed:', user);
-});
-```
-
-### Using UserService
-```typescript
-// In component constructor
-constructor(private userService: UserService) {}
-
-// Subscribe to profiles
-this.userService.profiles$.subscribe(profiles => {
-  this.allUsers = profiles;
-});
-
-// Add profile
-this.userService.addProfile({
-  profileName: 'New Profile',
-  description: 'Description',
-  creationDate: '01-01-2025'
-});
-
-// Update profile
-this.userService.updateProfile(id, {
-  profileName: 'Updated Name'
-});
-
-// Delete profile
-this.userService.deleteProfile(id);
-
-// Search profiles
-const results = this.userService.searchProfiles('query');
-```
-
-### RxJS Search Pattern
-```typescript
-// Setup in ngOnInit
-this.searchSubscription = this.searchSubject.pipe(
-  debounceTime(150),
-  distinctUntilChanged(),
-  switchMap(query => {
-    return of(query).pipe(
-      map(q => ({
-        results: this.userService.searchProfiles(q)
-      }))
-    );
-  })
-).subscribe(({ results }) => {
-  this.filteredUsers = results;
-});
-
-// Trigger search
-onSearchChange(query: string): void {
-  this.searchSubject.next(query);
-}
-
-// Cleanup
-ngOnDestroy(): void {
-  this.searchSubscription?.unsubscribe();
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;              // admin | manager | user | guest
+  permissions: Permission[];    // read | write | delete | manage_users
+  loginTime: string;
 }
 ```
 
----
-
-## Common Issues & Solutions
-
-### Issue: Data disappears on refresh
-**Solution**: Check if service is saving to localStorage
+### Protected Route
 ```typescript
-// In service
-this.storageService.set('key', data);
-```
-
-### Issue: Search not working
-**Solution**: Check if searchSubject is emitting
-```typescript
-// In component
-onSearchChange(query: string): void {
-  this.searchSubject.next(query);  // Make sure this is called
+{ 
+  path: 'users', 
+  component: Users, 
+  canActivate: [roleGuard],
+  data: { roles: ['admin', 'manager', 'user'] }  // Guests blocked
 }
 ```
 
-### Issue: Memory leak warning
-**Solution**: Unsubscribe in ngOnDestroy
+### Check Permissions in Component
 ```typescript
-ngOnDestroy(): void {
-  this.subscription?.unsubscribe();
-}
-```
-
-### Issue: Modal not closing
-**Solution**: Check if method is bound correctly
-```typescript
-// In HTML
-(click)="closeModal()"  // Not (click)="closeModal"
+canDelete = this.authService.hasPermission('delete');
+isAdmin = this.authService.isAdmin();
 ```
 
 ---
 
-## Useful VS Code Extensions
+## Documentation Files
 
-- **Angular Language Service** - IntelliSense for Angular
-- **Angular Snippets** - Code snippets
-- **Prettier** - Code formatter
-- **ESLint** - Code linting
-- **GitLens** - Git integration
-
----
-
-## Keyboard Shortcuts (VS Code)
-
-- `Ctrl + P` - Quick file open
-- `Ctrl + Shift + P` - Command palette
-- `Ctrl + B` - Toggle sidebar
-- `Ctrl + `` - Toggle terminal
-- `Alt + Up/Down` - Move line up/down
-- `Ctrl + /` - Toggle comment
+- `SECURITY_GUIDE.md` - Complete security documentation
+- `DEMO_INSTRUCTIONS.md` - Step-by-step demo guide
+- `API_SETUP.md` - API setup instructions
+- `QUICK_REFERENCE.md` - This file
 
 ---
 
-## Testing Checklist
+## Troubleshooting
 
-Before committing:
-- [ ] Code compiles without errors
-- [ ] All features work as expected
-- [ ] No console errors
-- [ ] Data persists on refresh
-- [ ] Responsive on mobile
-- [ ] Comments are clear
+**Problem:** Can't login  
+**Solution:** Make sure JSON Server is running (`npm run api`)
 
----
+**Problem:** Access denied error  
+**Solution:** This is expected! Try logging in with a different role
 
-## Deployment Checklist
-
-Before deploying:
-- [ ] Build succeeds (`npm run build`)
-- [ ] Environment variables set
-- [ ] API endpoints configured
-- [ ] Error handling in place
-- [ ] Loading states added
-- [ ] SEO meta tags added
+**Problem:** Role badge not showing  
+**Solution:** Check browser console for errors, refresh page
 
 ---
 
-## Resources
+## Tech Stack
 
-- [Angular Docs](https://angular.dev)
-- [RxJS Docs](https://rxjs.dev)
-- [TypeScript Docs](https://www.typescriptlang.org/docs/)
-- [Bootstrap Icons](https://icons.getbootstrap.com/)
+- **Angular 19** (Standalone Components, Zoneless)
+- **TypeScript** (Type-safe roles & permissions)
+- **RxJS** (Reactive state management)
+- **Chart.js** (Data visualization)
+- **JSON Server** (Mock API)
+- **Bootstrap Icons** (UI icons)
 
 ---
 
-**Keep this handy while coding!** 📌
+## Security Layers
+
+```
+Layer 1: authGuard
+         ↓ Is user logged in?
+         
+Layer 2: roleGuard
+         ↓ Does user have required role?
+         
+Layer 3: permissionGuard
+         ↓ Does user have required permissions?
+         
+         ✅ ACCESS GRANTED
+```
+
+---
+
+**Built with ❤️ for internship project**

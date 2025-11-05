@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
@@ -14,11 +14,15 @@ import { ChartConfiguration, ChartType } from 'chart.js';
 export class Dashboard {
   // User data
   userName: string = 'Zeeshan Khan';
+  userRole: string = 'user';
   notificationCount: number = 5;
 
   // Sidebar state
   isSidebarCollapsed: boolean = false;
   activeMenu: string = 'dashboard';
+
+  // Error message from route guard
+  errorMessage: string = '';
 
   // Dashboard statistics
   totalUsers: number = 50000;
@@ -113,12 +117,54 @@ export class Dashboard {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    // Get user name from auth service
+    // Get user info from auth service
     this.userName = this.authService.getUserName();
+    this.userRole = this.authService.getUserRole() || 'user';
+
+    // Check for error messages from route guards
+    this.route.queryParams.subscribe(params => {
+      if (params['error']) {
+        if (params['error'] === 'access_denied') {
+          this.errorMessage = '⚠️ Access Denied: You do not have permission to access that page.';
+        } else if (params['error'] === 'insufficient_permissions') {
+          this.errorMessage = '⚠️ Insufficient Permissions: You need additional permissions to access that page.';
+        }
+
+        // Clear error message after 5 seconds
+        if (this.errorMessage) {
+          setTimeout(() => {
+            this.errorMessage = '';
+            // Remove query params from URL
+            this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: {},
+              replaceUrl: true
+            });
+          }, 5000);
+        }
+      }
+    });
+  }
+
+  // Get role badge color
+  getRoleBadgeClass(): string {
+    switch (this.userRole) {
+      case 'admin':
+        return 'role-badge-admin';
+      case 'manager':
+        return 'role-badge-manager';
+      case 'user':
+        return 'role-badge-user';
+      case 'guest':
+        return 'role-badge-guest';
+      default:
+        return 'role-badge-user';
+    }
   }
 
   // Toggle sidebar collapse

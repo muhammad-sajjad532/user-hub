@@ -55,15 +55,9 @@
       "creationDate": "04-11-2025"
     },
     {
-      "id": "de31",
-      "profileName": "Waleed ur Rehman",
-      "description": "Backend Developer",
-      "creationDate": "04-11-2025"
-    },
-    {
       "id": "18c0",
       "profileName": "Rizwan yaqoob",
-      "description": "Backend Developer(java)",
+      "description": "Backend Developer(java-spring boot)",
       "creationDate": "04-11-2025"
     },
     {
@@ -83,6 +77,18 @@
       "profileName": "unknown user",
       "description": "Vue developer",
       "creationDate": "04-11-2025"
+    },
+    {
+      "id": "c028",
+      "profileName": "Sajjad Bangash",
+      "description": "Jr. Angular Developer",
+      "creationDate": "05-11-2025"
+    },
+    {
+      "id": "9224",
+      "profileName": "Azmat Khan",
+      "description": "CEO/Founder",
+      "creationDate": "05-11-2025"
     }
   ],
   "users": [
@@ -90,13 +96,47 @@
       "id": "1",
       "email": "admin@userhub.com",
       "password": "admin123",
-      "name": "Admin User"
+      "name": "Admin User",
+      "role": "admin",
+      "permissions": [
+        "read",
+        "write",
+        "delete",
+        "manage_users"
+      ]
     },
     {
       "id": "2",
-      "email": "test@test.com",
-      "password": "test123",
-      "name": "Test User"
+      "email": "manager@userhub.com",
+      "password": "manager123",
+      "name": "Manager User",
+      "role": "manager",
+      "permissions": [
+        "read",
+        "write",
+        "delete"
+      ]
+    },
+    {
+      "id": "3",
+      "email": "user@userhub.com",
+      "password": "user123",
+      "name": "Regular User",
+      "role": "user",
+      "permissions": [
+        "read",
+        "write"
+      ]
+    },
+    {
+      "id": "4",
+      "email": "guest@userhub.com",
+      "password": "guest123",
+      "name": "Guest User",
+      "role": "guest",
+      "permissions": [
+        "read"
+      ]
     }
   ]
 }

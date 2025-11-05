@@ -1,14 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { StorageService } from './storage';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, map, catchError, of } from 'rxjs';
+
+/**
+ * User roles in the system
+ */
+export type UserRole = 'admin' | 'manager' | 'user' | 'guest';
+
+/**
+ * User permissions
+ */
+export type Permission = 'read' | 'write' | 'delete' | 'manage_users';
 
 /**
  * User interface for authentication
  */
 export interface User {
+  id: string;
   email: string;
   name: string;
+  role: UserRole;
+  permissions: Permission[];
   loginTime: string;
 }
 
@@ -21,6 +34,9 @@ export interface User {
   providedIn: 'root'
 })
 export class AuthService {
+  // API endpoint
+  private readonly API_URL = 'http://localhost:3000/users';
+  
   // Storage key for current user
   private readonly USER_KEY = 'currentUser';
 
@@ -30,12 +46,13 @@ export class AuthService {
   public currentUser$: Observable<User | null>;
 
   constructor(
-    private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
     // Initialize with user from localStorage (if exists)
-    const storedUser = this.storageService.get<User>(this.USER_KEY);
-    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser);
+    const storedUser = localStorage.getItem(this.USER_KEY);
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    this.currentUserSubject = new BehaviorSubject<User | null>(user);
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
@@ -54,31 +71,50 @@ export class AuthService {
   }
 
   /**
-   * Login user
+   * Login user with API validation
    * @param email - User email
    * @param password - User password
-   * @returns true if login successful
+   * @returns Observable<User | null>
    */
-  login(email: string, password: string): boolean {
-    // In real app, this would call an API
-    // For now, we accept any non-empty credentials
+  login(email: string, password: string): Observable<User | null> {
     if (!email || !password) {
-      return false;
+      return of(null);
     }
 
-    const user: User = {
-      email: email,
-      name: email.split('@')[0] || 'User',
-      loginTime: new Date().toISOString()
-    };
+    // Query API for user with matching email and password
+    return this.http.get<any[]>(`${this.API_URL}?email=${email}&password=${password}`).pipe(
+      map(users => {
+        if (users && users.length > 0) {
+          const userData = users[0];
+          
+          // Create user object with role and permissions
+          const user: User = {
+            id: userData.id,
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+            permissions: userData.permissions,
+            loginTime: new Date().toISOString()
+          };
 
-    // Save to localStorage
-    this.storageService.set(this.USER_KEY, user);
-    
-    // Update BehaviorSubject (notifies all subscribers)
-    this.currentUserSubject.next(user);
+          // Save to localStorage
+          localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+          
+          // Update BehaviorSubject (notifies all subscribers)
+          this.currentUserSubject.next(user);
 
-    return true;
+          console.log('✅ Login successful:', user.name, `(${user.role})`);
+          return user;
+        }
+        
+        console.log('❌ Login failed: Invalid credentials');
+        return null;
+      }),
+      catchError(error => {
+        console.error('❌ Login error:', error);
+        return of(null);
+      })
+    );
   }
 
   /**
@@ -87,7 +123,7 @@ export class AuthService {
    */
   logout(): void {
     // Remove user from localStorage
-    this.storageService.remove(this.USER_KEY);
+    localStorage.removeItem(this.USER_KEY);
     
     // Update BehaviorSubject
     this.currentUserSubject.next(null);
@@ -108,5 +144,56 @@ export class AuthService {
    */
   getUserEmail(): string {
     return this.currentUserValue?.email || '';
+  }
+
+  /**
+   * Get current user role
+   */
+  getUserRole(): UserRole | null {
+    return this.currentUserValue?.role || null;
+  }
+
+  /**
+   * Check if user has specific role
+   */
+  hasRole(role: UserRole): boolean {
+    return this.currentUserValue?.role === role;
+  }
+
+  /**
+   * Check if user has any of the specified roles
+   */
+  hasAnyRole(roles: UserRole[]): boolean {
+    const userRole = this.currentUserValue?.role;
+    return userRole ? roles.includes(userRole) : false;
+  }
+
+  /**
+   * Check if user has specific permission
+   */
+  hasPermission(permission: Permission): boolean {
+    return this.currentUserValue?.permissions.includes(permission) || false;
+  }
+
+  /**
+   * Check if user has all specified permissions
+   */
+  hasAllPermissions(permissions: Permission[]): boolean {
+    const userPermissions = this.currentUserValue?.permissions || [];
+    return permissions.every(p => userPermissions.includes(p));
+  }
+
+  /**
+   * Check if user is admin
+   */
+  isAdmin(): boolean {
+    return this.hasRole('admin');
+  }
+
+  /**
+   * Check if user is manager or admin
+   */
+  isManagerOrAdmin(): boolean {
+    return this.hasAnyRole(['admin', 'manager']);
   }
 }

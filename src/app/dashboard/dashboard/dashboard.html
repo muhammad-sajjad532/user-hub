@@ -1,6 +1,6 @@
 <!-- src/app/dashboard/dashboard.component.html -->
 <div class="dashboard-wrapper">
-  
+
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
     <!-- Logo Section -->
@@ -13,52 +13,32 @@
 
     <!-- Menu Items -->
     <nav class="sidebar-menu">
-      <a 
-        href="javascript:void(0)" 
-        class="menu-item"
-        [class.active]="activeMenu === 'dashboard'"
-        (click)="setActiveMenu('dashboard')"
-      >
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'dashboard'"
+        (click)="setActiveMenu('dashboard')">
         <i class="bi bi-grid-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Dashboard</span>
       </a>
 
-      <a 
-        href="javascript:void(0)" 
-        class="menu-item"
-        [class.active]="activeMenu === 'users'"
-        (click)="setActiveMenu('users')"
-      >
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'users'"
+        (click)="setActiveMenu('users')">
         <i class="bi bi-people-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Users</span>
       </a>
 
-      <a 
-        href="javascript:void(0)" 
-        class="menu-item"
-        [class.active]="activeMenu === 'report'"
-        (click)="setActiveMenu('report')"
-      >
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'report'"
+        (click)="setActiveMenu('report')">
         <i class="bi bi-file-earmark-text-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Report</span>
       </a>
 
-      <a 
-        href="javascript:void(0)" 
-        class="menu-item"
-        [class.active]="activeMenu === 'feedback'"
-        (click)="setActiveMenu('feedback')"
-      >
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'feedback'"
+        (click)="setActiveMenu('feedback')">
         <i class="bi bi-chat-left-text-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Feedback Management</span>
       </a>
 
-      <a 
-        href="javascript:void(0)" 
-        class="menu-item"
-        [class.active]="activeMenu === 'setting'"
-        (click)="setActiveMenu('setting')"
-      >
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'setting'"
+        (click)="setActiveMenu('setting')">
         <i class="bi bi-gear-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Setting</span>
       </a>
@@ -73,7 +53,7 @@
 
   <!-- Main Content -->
   <main class="main-content">
-    
+
     <!-- Top Bar -->
     <header class="top-bar">
       <button class="menu-toggle" (click)="toggleSidebar()">
@@ -90,17 +70,26 @@
         <!-- User Profile -->
         <div class="user-profile">
           <img src="https://ui-avatars.com/api/?name={{ userName }}&background=3b82f6&color=fff" alt="User">
-          <span class="user-name">{{ userName }}</span>
+          <div class="user-info">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-role" [ngClass]="getRoleBadgeClass()">{{ userRole }}</span>
+          </div>
         </div>
       </div>
     </header>
 
+    <!-- Error Message Alert -->
+    <div class="error-alert" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+
     <!-- Dashboard Content -->
     <div class="dashboard-content">
-      
+
       <!-- Statistics Cards -->
       <div class="stats-row">
-        
+
         <!-- Total Users Card -->
         <div class="stat-card total-users">
           <div class="stat-icon green">
@@ -129,11 +118,7 @@
       <div class="chart-card">
         <h3 class="chart-title">Monthly Turnover</h3>
         <div class="chart-container-wrapper">
-          <canvas 
-            baseChart
-            [data]="barChartData"
-            [options]="barChartOptions"
-            [type]="barChartType">
+          <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
           </canvas>
         </div>
       </div>

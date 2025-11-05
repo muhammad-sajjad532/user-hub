@@ -253,13 +253,12 @@ export class Users implements OnInit, OnDestroy {
         description: this.formData.description,
         creationDate: this.formData.creationDate
       }).subscribe({
-        next: (response) => {
-          console.log('✅ Profile added successfully:', response);
+        next: () => {
           this.closeModal();
           this.showSuccessMessage('Profile added successfully!');
         },
         error: (error) => {
-          console.error('❌ Error adding profile:', error);
+          console.error('Error adding profile:', error);
           alert('Failed to add profile. Please try again.');
         }
       });
@@ -269,13 +268,12 @@ export class Users implements OnInit, OnDestroy {
         profileName: this.formData.profileName,
         description: this.formData.description
       }).subscribe({
-        next: (response) => {
-          console.log('✅ Profile updated successfully:', response);
+        next: () => {
           this.closeModal();
           this.showSuccessMessage('Profile updated successfully!');
         },
         error: (error) => {
-          console.error('❌ Error updating profile:', error);
+          console.error('Error updating profile:', error);
           alert('Failed to update profile. Please try again.');
         }
       });
@@ -339,19 +337,16 @@ export class Users implements OnInit, OnDestroy {
    * Auto-closes after 2 seconds
    */
   showSuccessMessage(message: string): void {
-    console.log('🎉 Showing success message:', message);
     this.successMessage = message;
     this.showSuccessModal = true;
     
     // Manually trigger change detection for zoneless mode
     this.cdr.detectChanges();
-    
-    console.log('showSuccessModal set to:', this.showSuccessModal);
 
     // Auto-close after 3 seconds
     setTimeout(() => {
       this.closeSuccessModal();
-      this.cdr.detectChanges(); // Trigger change detection on close too
+      this.cdr.detectChanges();
     }, 3000);
   }
 
