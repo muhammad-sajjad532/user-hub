@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
-import { UserService, UserProfile } from '../../services/user';
-import { AuthService } from '../../services/auth';
+import { UserService, UserProfile } from '../../../services/user';
+import { AuthService } from '../../../services/auth';
 
 /**
  * Users Component

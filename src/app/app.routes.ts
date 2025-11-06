@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { Signup } from './signup/signup/signup';
-import { Login } from './login/login/login';
-import { Dashboard } from './dashboard/dashboard/dashboard';
-import { Users } from './users/users/users';
+import { Signup } from './components/signup/signup/signup';
+import { Login } from './components/login/login/login';
+import { Dashboard } from './components/dashboard/dashboard/dashboard';
+import { Users } from './components/users/users/users';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
 
