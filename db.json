@@ -1,32 +1,14 @@
 {
   "profiles": [
     {
-      "id": "7",
-      "profileName": "Random Developer",
-      "description": "MEAN developer",
-      "creationDate": "26-08-2025"
-    },
-    {
-      "id": "8",
-      "profileName": "Random user",
-      "description": "Angular Developer",
-      "creationDate": "27-08-2025"
-    },
-    {
       "id": "9",
       "profileName": "Hamid",
-      "description": "Angular Developer",
+      "description": "Senior Angular Developer",
       "creationDate": "28-08-2025"
     },
     {
-      "id": "10",
-      "profileName": "Random",
-      "description": "Python Developer",
-      "creationDate": "29-08-2025"
-    },
-    {
       "id": "a58b",
-      "profileName": "sajjad",
+      "profileName": "Muhammad Sajjad",
       "description": "Front-end web developer",
       "creationDate": "04-11-2025"
     },
@@ -55,26 +37,14 @@
       "creationDate": "04-11-2025"
     },
     {
-      "id": "18c0",
-      "profileName": "Rizwan yaqoob",
-      "description": "Backend Developer(java-spring boot)",
-      "creationDate": "04-11-2025"
-    },
-    {
       "id": "a0b6",
       "profileName": "Ahmad Ali Rabbani",
       "description": "React Developer",
       "creationDate": "04-11-2025"
     },
     {
-      "id": "827a",
-      "profileName": "Sahil",
-      "description": "Digital Marketer",
-      "creationDate": "04-11-2025"
-    },
-    {
       "id": "7978",
-      "profileName": "unknown user",
+      "profileName": "Sahil",
       "description": "Vue developer",
       "creationDate": "04-11-2025"
     },
@@ -89,6 +59,18 @@
       "profileName": "Azmat Khan",
       "description": "CEO/Founder",
       "creationDate": "05-11-2025"
+    },
+    {
+      "id": "40fe",
+      "profileName": "khan bangash",
+      "description": "Full stack",
+      "creationDate": "05-11-2025"
+    },
+    {
+      "id": "7656",
+      "profileName": "Umair",
+      "description": "Java Developer",
+      "creationDate": "06-11-2025"
     }
   ],
   "users": [

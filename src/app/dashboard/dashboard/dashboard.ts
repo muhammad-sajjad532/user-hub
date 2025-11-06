@@ -12,9 +12,9 @@ import { ChartConfiguration, ChartType } from 'chart.js';
   styleUrls: ['./dashboard.css'],
 })
 export class Dashboard {
-  // User data
-  userName: string = 'Zeeshan Khan';
-  userRole: string = 'user';
+  // User data (loaded from AuthService in ngOnInit)
+  userName: string = '';
+  userRole: string = '';
   notificationCount: number = 5;
 
   // Sidebar state

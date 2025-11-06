@@ -21,7 +21,7 @@ import { AuthService } from '../../services/auth';
 })
 export class Users implements OnInit, OnDestroy {
   // User data
-  userName: string = 'User';
+  userName: string = '';
   notificationCount: number = 5;
 
   // Sidebar state
@@ -74,8 +74,24 @@ export class Users implements OnInit, OnDestroy {
     private router: Router,
     private userService: UserService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    //private cdr: ChangeDetectorRef
   ) {}
+
+  /**
+   * Check if current user can delete profiles
+   * Only users with 'delete' permission can delete
+   */
+  canDelete(): boolean {
+    return this.authService.hasPermission('delete');
+  }
+
+  /**
+   * Check if current user can create/edit profiles
+   * Only users with 'write' permission can create/edit
+   */
+  canWrite(): boolean {
+    return this.authService.hasPermission('write');
+  }
 
   /**
    * Initialize component
@@ -341,12 +357,12 @@ export class Users implements OnInit, OnDestroy {
     this.showSuccessModal = true;
     
     // Manually trigger change detection for zoneless mode
-    this.cdr.detectChanges();
+    //this.cdr.detectChanges();
 
     // Auto-close after 3 seconds
     setTimeout(() => {
       this.closeSuccessModal();
-      this.cdr.detectChanges();
+      //this.cdr.detectChanges();
     }, 3000);
   }
 
@@ -356,7 +372,7 @@ export class Users implements OnInit, OnDestroy {
   closeSuccessModal(): void {
     this.showSuccessModal = false;
     this.successMessage = '';
-    this.cdr.detectChanges(); // Trigger change detection
+    //this.cdr.detectChanges(); // Trigger change detection
   }
 
   /**

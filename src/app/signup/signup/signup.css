@@ -152,7 +152,7 @@
 .btn-signup {
   width: 100%;
   padding: 14px;
-  background: #3b82f6;
+  background: #6b7280;
   color: white;
   border: none;
   border-radius: 8px;
@@ -164,7 +164,7 @@
 }
 
 .btn-signup:hover {
-  background: #2563eb;
+  background: #4a5568;
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
