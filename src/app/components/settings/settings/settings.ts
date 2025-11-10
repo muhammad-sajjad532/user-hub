@@ -1,0 +1,197 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../services/auth';
+import { ThemeService } from '../../../services/theme';
+
+@Component({
+  selector: 'app-settings',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './settings.html',
+  styleUrl: './settings.css',
+})
+export class Settings {
+  // User data
+  userName: string = '';
+  userEmail: string = '';
+  userRole: string = '';
+  notificationCount: number = 5;
+
+  // Sidebar state
+  isSidebarCollapsed: boolean = false;
+  activeMenu: string = 'setting';
+
+  // Active tab
+  activeTab: string = 'profile';
+
+  // Profile form
+  profileForm = {
+    name: '',
+    email: '',
+    phone: '',
+    bio: ''
+  };
+
+  // Password form
+  passwordForm = {
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  };
+
+  // Preferences
+  preferences = {
+    emailNotifications: true,
+    pushNotifications: false,
+    darkMode: false,
+    language: 'en'
+  };
+
+  // Success/Error messages
+  successMessage: string = '';
+  errorMessage: string = '';
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private http: HttpClient,
+    private themeService: ThemeService
+  ) {}
+
+  ngOnInit(): void {
+    // Get user info
+    this.userName = this.authService.getUserName();
+    this.userEmail = this.authService.getUserEmail();
+    this.userRole = this.authService.getUserRole() || 'user';
+
+    // Initialize profile form
+    this.profileForm.name = this.userName;
+    this.profileForm.email = this.userEmail;
+    
+    // Initialize dark mode from theme service
+    this.preferences.darkMode = this.themeService.isDarkMode;
+  }
+
+  // Toggle sidebar
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
+  // Set active menu
+  setActiveMenu(menu: string): void {
+    this.activeMenu = menu;
+    if (menu === 'dashboard') {
+      this.router.navigate(['/dashboard']);
+    } else if (menu === 'users') {
+      this.router.navigate(['/users']);
+    } else if (menu === 'setting') {
+      this.router.navigate(['/settings']);
+    }
+  }
+
+  // Set active tab
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+    this.clearMessages();
+  }
+
+  // Save profile
+  saveProfile(): void {
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser) return;
+
+    // Update user in db.json via API
+    const updatedUser = {
+      ...currentUser,
+      name: this.profileForm.name,
+      email: this.profileForm.email
+    };
+
+    // Update in db.json
+    this.http.put(`http://localhost:3000/users/${currentUser.id}`, updatedUser).subscribe({
+      next: (response) => {
+        // Update localStorage
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        this.successMessage = '✅ Profile updated successfully in database!';
+        setTimeout(() => this.clearMessages(), 3000);
+      },
+      error: (error) => {
+        console.error('Update error:', error);
+        this.errorMessage = '❌ Failed to update profile!';
+        setTimeout(() => this.clearMessages(), 3000);
+      }
+    });
+  }
+
+  // Change password
+  changePassword(): void {
+    if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
+      this.errorMessage = '❌ Passwords do not match!';
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    if (this.passwordForm.newPassword.length < 6) {
+      this.errorMessage = '❌ Password must be at least 6 characters!';
+      setTimeout(() => this.clearMessages(), 3000);
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser) return;
+
+    // Update password in db.json
+    const updatedUser = {
+      ...currentUser,
+      password: this.passwordForm.newPassword
+    };
+
+    this.http.put(`http://localhost:3000/users/${currentUser.id}`, updatedUser).subscribe({
+      next: (response) => {
+        this.successMessage = '✅ Password changed successfully in database!';
+        this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+        setTimeout(() => this.clearMessages(), 3000);
+      },
+      error: (error) => {
+        console.error('Password change error:', error);
+        this.errorMessage = '❌ Failed to change password!';
+        setTimeout(() => this.clearMessages(), 3000);
+      }
+    });
+  }
+
+  // Save preferences
+  savePreferences(): void {
+    this.successMessage = '✅ Preferences saved successfully!';
+    setTimeout(() => this.clearMessages(), 3000);
+  }
+
+  // Toggle dark mode
+  toggleDarkMode(): void {
+    this.themeService.setDarkMode(this.preferences.darkMode);
+  }
+
+  // Clear messages
+  clearMessages(): void {
+    this.successMessage = '';
+    this.errorMessage = '';
+  }
+
+  // Logout
+  onLogout(): void {
+    this.authService.logout();
+  }
+
+  // Get role badge class
+  getRoleBadgeClass(): string {
+    switch (this.userRole) {
+      case 'admin': return 'role-badge-admin';
+      case 'manager': return 'role-badge-manager';
+      case 'user': return 'role-badge-user';
+      case 'guest': return 'role-badge-guest';
+      default: return 'role-badge-user';
+    }
+  }
+}

@@ -3,6 +3,7 @@ import { Signup } from './components/signup/signup/signup';
 import { Login } from './components/login/login/login';
 import { Dashboard } from './components/dashboard/dashboard/dashboard';
 import { Users } from './components/users/users/users';
+import { Settings } from './components/settings/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
 
@@ -35,6 +36,13 @@ export const routes: Routes = [
     component: Users,
     canActivate: [roleGuard],
     data: { roles: ['admin', 'manager', 'user'] }
+  },
+
+  // Settings (any authenticated user)
+  {
+    path: 'settings',
+    component: Settings,
+    canActivate: [authGuard]
   },
 
   // Catch-all redirect

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
@@ -26,7 +27,10 @@ export class Signup {
   confirmPasswordError: string = '';
   termsError: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   // Toggle password visibility
   togglePasswordVisibility(): void {
@@ -116,18 +120,28 @@ export class Signup {
 
     if (isFullNameValid && isEmailValid && isPasswordValid && 
         isConfirmPasswordValid && isTermsValid) {
-      // Here you would typically call a registration service
-      console.log('Sign up attempt:', {
-        fullName: this.fullName,
+      
+      // Create new user object
+      const newUser = {
         email: this.email,
-        password: this.password
+        password: this.password,
+        name: this.fullName,
+        role: 'user',
+        permissions: ['read', 'write']
+      };
+
+      // Save to db.json via API
+      this.http.post('http://localhost:3000/users', newUser).subscribe({
+        next: (response) => {
+          console.log('User registered:', response);
+          alert('✅ Sign up successful! Please login.');
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Signup error:', error);
+          alert('❌ Sign up failed. Email might already exist.');
+        }
       });
-      
-      // For now, just show success message
-      alert('Sign up successful! Please login.');
-      
-      // Navigate to login page
-      this.router.navigate(['/login']);
     }
   }
 

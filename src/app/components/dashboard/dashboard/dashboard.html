@@ -88,38 +88,101 @@
     <div class="dashboard-content">
 
       <!-- Statistics Cards -->
-      <div class="stats-row">
-
-        <!-- Total Users Card -->
-        <div class="stat-card total-users">
-          <div class="stat-icon green">
+      <div class="stats-grid">
+        <!-- Total Profiles -->
+        <div class="stat-card blue">
+          <div class="stat-icon">
             <i class="bi bi-people-fill"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">Total Users</h3>
-            <p class="stat-value">{{ totalUsers.toLocaleString() }}</p>
+            <h3 class="stat-label">Total Profiles</h3>
+            <p class="stat-value">{{ totalProfiles }}</p>
+            <span class="stat-change positive">+12% from last month</span>
           </div>
         </div>
 
-        <!-- Monthly Users Card -->
-        <div class="stat-card monthly-users">
-          <div class="stat-icon yellow">
-            <i class="bi bi-person-fill"></i>
+        <!-- Active Users -->
+        <div class="stat-card green">
+          <div class="stat-icon">
+            <i class="bi bi-person-check-fill"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">Monthly Users</h3>
-            <p class="stat-value">{{ monthlyUsers.toLocaleString() }}</p>
+            <h3 class="stat-label">Active Users</h3>
+            <p class="stat-value">{{ activeUsers }}</p>
+            <span class="stat-change positive">+8% from last month</span>
           </div>
         </div>
 
+        <!-- New Today -->
+        <div class="stat-card purple">
+          <div class="stat-icon">
+            <i class="bi bi-person-plus-fill"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-label">New Today</h3>
+            <p class="stat-value">{{ newToday }}</p>
+            <span class="stat-change">Today's registrations</span>
+          </div>
+        </div>
+
+        <!-- Total Users -->
+        <div class="stat-card orange">
+          <div class="stat-icon">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <div class="stat-info">
+            <h3 class="stat-label">Growth Rate</h3>
+            <p class="stat-value">15%</p>
+            <span class="stat-change positive">+3% from last month</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Monthly Turnover Chart with Chart.js -->
-      <div class="chart-card">
-        <h3 class="chart-title">Monthly Turnover</h3>
-        <div class="chart-container-wrapper">
-          <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
-          </canvas>
+      <!-- Quick Actions -->
+      <div class="quick-actions-section">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="quick-actions-grid">
+          <div *ngFor="let action of quickActions" 
+               class="quick-action-card" 
+               [class]="action.color"
+               (click)="navigateToAction(action.route)">
+            <i [class]="action.icon"></i>
+            <h4>{{ action.title }}</h4>
+            <p>{{ action.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="content-grid">
+        <!-- Chart Section -->
+        <div class="chart-section">
+          <div class="chart-card">
+            <h3 class="chart-title">Monthly Turnover</h3>
+            <div class="chart-container-wrapper">
+              <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
+              </canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activities -->
+        <div class="activities-section">
+          <div class="activities-card">
+            <h3 class="activities-title">Recent Activities</h3>
+            <div class="activities-list">
+              <div *ngFor="let activity of recentActivities" class="activity-item">
+                <div class="activity-icon" [class]="activity.color">
+                  <i [class]="activity.icon"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-action">{{ activity.action }}</p>
+                  <p class="activity-user">{{ activity.user }}</p>
+                </div>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

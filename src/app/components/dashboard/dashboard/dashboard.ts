@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth';
+import { UserService } from '../../../services/user';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 
@@ -25,8 +26,27 @@ export class Dashboard {
   errorMessage: string = '';
 
   // Dashboard statistics
-  totalUsers: number = 50000;
-  monthlyUsers: number = 3500;
+  totalUsers: number = 0;
+  totalProfiles: number = 0;
+  activeUsers: number = 0;
+  newToday: number = 0;
+
+  // Recent activities
+  recentActivities: Array<{
+    icon: string;
+    action: string;
+    user: string;
+    time: string;
+    color: string;
+  }> = [];
+
+  // Quick actions
+  quickActions = [
+    { icon: 'bi-person-plus', title: 'Add User', description: 'Create new user profile', route: '/users', color: 'blue' },
+    { icon: 'bi-people', title: 'View Users', description: 'Manage all users', route: '/users', color: 'green' },
+    { icon: 'bi-gear', title: 'Settings', description: 'App settings', route: '/settings', color: 'purple' },
+    { icon: 'bi-file-earmark-text', title: 'Reports', description: 'View reports', route: '/dashboard', color: 'orange' }
+  ];
 
   // Chart.js configuration for Monthly Turnover
   public barChartType: ChartType = 'bar';
@@ -118,13 +138,20 @@ export class Dashboard {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
     // Get user info from auth service
     this.userName = this.authService.getUserName();
     this.userRole = this.authService.getUserRole() || 'user';
+
+    // Load dashboard statistics
+    this.loadStatistics();
+
+    // Load recent activities
+    this.loadRecentActivities();
 
     // Check for error messages from route guards
     this.route.queryParams.subscribe(params => {
@@ -182,6 +209,8 @@ export class Dashboard {
       this.router.navigate(['/users']);
     } else if (menu === 'dashboard') {
       this.router.navigate(['/dashboard']);
+    } else if (menu === 'setting') {
+      this.router.navigate(['/settings']);
     }
   }
 
@@ -189,5 +218,41 @@ export class Dashboard {
   onLogout(): void {
     // Logout via auth service (handles everything)
     this.authService.logout();
+  }
+
+  // Load dashboard statistics
+  loadStatistics(): void {
+    this.userService.profiles$.subscribe(profiles => {
+      this.totalProfiles = profiles.length;
+      this.totalUsers = profiles.length;
+      
+      // Calculate active users (profiles created in last 30 days)
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      this.activeUsers = profiles.filter(p => {
+        const createdDate = new Date(p.creationDate);
+        return createdDate >= thirtyDaysAgo;
+      }).length;
+
+      // Calculate new today
+      const today = new Date().toLocaleDateString();
+      this.newToday = profiles.filter(p => p.creationDate === today).length;
+    });
+  }
+
+  // Load recent activities
+  loadRecentActivities(): void {
+    this.recentActivities = [
+      { icon: 'bi-person-plus', action: 'New user registered', user: 'Muhammad Sajjad', time: '2 mins ago', color: 'green' },
+      { icon: 'bi-pencil', action: 'Profile updated', user: 'Shoaib Rehman', time: '15 mins ago', color: 'blue' },
+      { icon: 'bi-trash', action: 'User deleted', user: 'Muhammad Shahab', time: '1 hour ago', color: 'red' },
+      { icon: 'bi-person-check', action: 'User verified', user: 'Muhammad Owais', time: '2 hours ago', color: 'green' },
+      { icon: 'bi-shield-check', action: 'Role updated', user: 'Muhammad Rizwan', time: '3 hours ago', color: 'purple' }
+    ];
+  }
+
+  // Navigate to quick action
+  navigateToAction(route: string): void {
+    this.router.navigate([route]);
   }
 }

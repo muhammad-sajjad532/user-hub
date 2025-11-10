@@ -71,6 +71,18 @@
       "profileName": "Umair",
       "description": "Java Developer",
       "creationDate": "06-11-2025"
+    },
+    {
+      "id": "459e",
+      "profileName": "Random Developer",
+      "description": "xyz",
+      "creationDate": "06-11-2025"
+    },
+    {
+      "id": "a387",
+      "profileName": "sajjad bangash",
+      "description": "senior angular developer",
+      "creationDate": "07-11-2025"
     }
   ],
   "users": [
@@ -119,6 +131,18 @@
       "permissions": [
         "read"
       ]
+    },
+    {
+      "id": "4e68",
+      "email": "sajjad@gmail.com",
+      "name": "sajjad khan",
+      "role": "user",
+      "permissions": [
+        "read",
+        "write"
+      ],
+      "loginTime": "2025-11-10T06:23:15.618Z",
+      "password": "khan000"
     }
   ]
 }
