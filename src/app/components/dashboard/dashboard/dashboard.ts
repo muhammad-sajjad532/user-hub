@@ -5,6 +5,7 @@ import { AuthService } from '../../../services/auth';
 import { UserService } from '../../../services/user';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
+import { NotificationService, Notification } from '../../../services/notification';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,11 @@ export class Dashboard {
   // User data (loaded from AuthService in ngOnInit)
   userName: string = '';
   userRole: string = '';
-  notificationCount: number = 5;
+  notificationCount: number = 0;
+  
+  // Notifications
+  notifications: Notification[] = [];
+  showNotificationDropdown: boolean = false;
 
   // Sidebar state
   isSidebarCollapsed: boolean = false;
@@ -139,13 +144,20 @@ export class Dashboard {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     // Get user info from auth service
     this.userName = this.authService.getUserName();
     this.userRole = this.authService.getUserRole() || 'user';
+
+    // Load notifications
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.notifications = notifications;
+      this.notificationCount = this.notificationService.getUnreadCount();
+    });
 
     // Load dashboard statistics
     this.loadStatistics();
@@ -218,6 +230,39 @@ export class Dashboard {
   onLogout(): void {
     // Logout via auth service (handles everything)
     this.authService.logout();
+  }
+
+  // Toggle notification dropdown
+  toggleNotificationDropdown(): void {
+    this.showNotificationDropdown = !this.showNotificationDropdown;
+  }
+
+  // Mark notification as read
+  markAsRead(id: number): void {
+    this.notificationService.markAsRead(id);
+  }
+
+  // Mark all notifications as read
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead();
+    this.showNotificationDropdown = false;
+  }
+
+  // Delete notification
+  deleteNotification(id: number, event: Event): void {
+    event.stopPropagation();
+    this.notificationService.deleteNotification(id);
+  }
+
+  // Get time ago string
+  getTimeAgo(date: Date): string {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    return `${Math.floor(seconds / 604800)}w ago`;
   }
 
   // Load dashboard statistics

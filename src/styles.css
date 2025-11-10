@@ -113,3 +113,64 @@ Dark Theme Styles */
   background-color: #374151;
   color: #f9fafb;
 }
+
+
+/* Dark Theme - Notifications */
+.dark-theme .notification-dropdown {
+  background: #1f2937;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dark-theme .notification-header {
+  background: #111827;
+  border-bottom-color: #374151;
+}
+
+.dark-theme .notification-header h3 {
+  color: #f9fafb;
+}
+
+.dark-theme .mark-all-read {
+  color: #818cf8;
+}
+
+.dark-theme .mark-all-read:hover {
+  background: #312e81;
+}
+
+.dark-theme .notification-item {
+  border-bottom-color: #374151;
+}
+
+.dark-theme .notification-item:hover {
+  background: #374151;
+}
+
+.dark-theme .notification-item.unread {
+  background: #1e3a5f;
+}
+
+.dark-theme .notification-content h4 {
+  color: #f9fafb;
+}
+
+.dark-theme .notification-content p {
+  color: #9ca3af;
+}
+
+.dark-theme .notification-time {
+  color: #6b7280;
+}
+
+.dark-theme .delete-notification {
+  color: #9ca3af;
+}
+
+.dark-theme .delete-notification:hover {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.dark-theme .no-notifications {
+  color: #6b7280;
+}

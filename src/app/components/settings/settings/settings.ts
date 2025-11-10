@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { ThemeService } from '../../../services/theme';
+import { NotificationService, Notification } from '../../../services/notification';
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,11 @@ export class Settings {
   userName: string = '';
   userEmail: string = '';
   userRole: string = '';
-  notificationCount: number = 5;
+  notificationCount: number = 0;
+  
+  // Notifications
+  notifications: Notification[] = [];
+  showNotificationDropdown: boolean = false;
 
   // Sidebar state
   isSidebarCollapsed: boolean = false;
@@ -57,7 +62,8 @@ export class Settings {
     private router: Router,
     private authService: AuthService,
     private http: HttpClient,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +78,12 @@ export class Settings {
     
     // Initialize dark mode from theme service
     this.preferences.darkMode = this.themeService.isDarkMode;
+    
+    // Load notifications
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.notifications = notifications;
+      this.notificationCount = this.notificationService.getUnreadCount();
+    });
   }
 
   // Toggle sidebar
@@ -193,5 +205,38 @@ export class Settings {
       case 'guest': return 'role-badge-guest';
       default: return 'role-badge-user';
     }
+  }
+
+  // Toggle notification dropdown
+  toggleNotificationDropdown(): void {
+    this.showNotificationDropdown = !this.showNotificationDropdown;
+  }
+
+  // Mark notification as read
+  markAsRead(id: number): void {
+    this.notificationService.markAsRead(id);
+  }
+
+  // Mark all notifications as read
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead();
+    this.showNotificationDropdown = false;
+  }
+
+  // Delete notification
+  deleteNotification(id: number, event: Event): void {
+    event.stopPropagation();
+    this.notificationService.deleteNotification(id);
+  }
+
+  // Get time ago string
+  getTimeAgo(date: Date): string {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    return `${Math.floor(seconds / 604800)}w ago`;
   }
 }

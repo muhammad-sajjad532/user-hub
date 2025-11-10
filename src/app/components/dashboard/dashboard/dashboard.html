@@ -62,9 +62,49 @@
 
       <div class="top-bar-right">
         <!-- Notification Badge -->
-        <div class="notification-badge">
-          <i class="bi bi-bell-fill"></i>
-          <span class="badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+        <div class="notification-wrapper">
+          <div class="notification-badge" (click)="toggleNotificationDropdown()">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+          </div>
+
+          <!-- Notification Dropdown -->
+          <div class="notification-dropdown" *ngIf="showNotificationDropdown">
+            <div class="notification-header">
+              <h3>Notifications</h3>
+              <button class="mark-all-read" (click)="markAllAsRead()" *ngIf="notificationCount > 0">
+                Mark all as read
+              </button>
+            </div>
+
+            <div class="notification-list">
+              <div *ngFor="let notification of notifications" 
+                   class="notification-item" 
+                   [class.unread]="!notification.read"
+                   [class.notification-success]="notification.type === 'success'"
+                   [class.notification-info]="notification.type === 'info'"
+                   [class.notification-warning]="notification.type === 'warning'"
+                   [class.notification-error]="notification.type === 'error'"
+                   (click)="markAsRead(notification.id)">
+                <div class="notification-icon">
+                  <i class="bi" [ngClass]="notification.icon"></i>
+                </div>
+                <div class="notification-content">
+                  <h4>{{ notification.title }}</h4>
+                  <p>{{ notification.message }}</p>
+                  <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
+                </div>
+                <button class="delete-notification" (click)="deleteNotification(notification.id, $event)">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+
+              <div class="no-notifications" *ngIf="notifications.length === 0">
+                <i class="bi bi-bell-slash"></i>
+                <p>No notifications</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- User Profile -->
