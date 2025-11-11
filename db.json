@@ -1,4 +1,61 @@
 {
+  "students": [
+    {
+      "id": 1,
+      "name": "Ahmed Ali",
+      "fatherName": "Ali Khan",
+      "class": "10-A",
+      "rollNumber": "101",
+      "phone": "0300-1234567",
+      "address": "Karachi",
+      "admissionDate": "2024-01-15",
+      "feeStatus": "paid"
+    },
+    {
+      "id": 2,
+      "name": "Sara Khan",
+      "fatherName": "Khan Sahib",
+      "class": "9-B",
+      "rollNumber": "205",
+      "phone": "0301-2345678",
+      "address": "Lahore",
+      "admissionDate": "2024-02-20",
+      "feeStatus": "pending"
+    },
+    {
+      "id": 3,
+      "name": "Fatima Noor",
+      "fatherName": "Noor Ahmed",
+      "class": "10-A",
+      "rollNumber": "102",
+      "phone": "0302-3456789",
+      "address": "Islamabad",
+      "admissionDate": "2024-01-10",
+      "feeStatus": "paid"
+    },
+    {
+      "id": 4,
+      "name": "Hassan Raza",
+      "fatherName": "Raza Ali",
+      "class": "8-C",
+      "rollNumber": "308",
+      "phone": "0303-4567890",
+      "address": "Karachi",
+      "admissionDate": "2024-03-05",
+      "feeStatus": "pending"
+    },
+    {
+      "id": 5,
+      "name": "Ayesha Malik",
+      "fatherName": "Malik Sahib",
+      "class": "9-A",
+      "rollNumber": "201",
+      "phone": "0304-5678901",
+      "address": "Lahore",
+      "admissionDate": "2024-02-15",
+      "feeStatus": "paid"
+    }
+  ],
   "profiles": [
     {
       "id": "9",

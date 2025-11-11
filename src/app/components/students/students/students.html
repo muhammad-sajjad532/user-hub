@@ -119,7 +119,7 @@
           <h2 class="page-title">Students Management</h2>
           <p class="page-subtitle">Manage student records and information</p>
         </div>
-        <button class="btn-primary" (click)="openAddModal()">
+        <button class="btn-primary" (click)="openAddModal()" *ngIf="canAdd()">
           <i class="bi bi-plus-lg"></i>
           Add New Student
         </button>
@@ -168,11 +168,14 @@
               </td>
               <td>
                 <div class="action-buttons">
-                  <button class="btn-icon btn-edit" title="Edit">
-                    <i class="bi bi-pencil"></i>
+                  <button class="btn-icon btn-view" (click)="viewStudent(student)" title="View Details" *ngIf="canView()">
+                    <i class="bi bi-eye-fill"></i>
                   </button>
-                  <button class="btn-icon btn-delete" (click)="deleteStudent(student.id)" title="Delete">
-                    <i class="bi bi-trash"></i>
+                  <button class="btn-icon btn-edit" (click)="openEditModal(student)" title="Edit" *ngIf="canEdit()">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn-icon btn-delete" (click)="openDeleteModal(student)" title="Delete" *ngIf="canDelete()">
+                    <i class="bi bi-trash-fill"></i>
                   </button>
                 </div>
               </td>
@@ -189,6 +192,128 @@
     </div>
   </main>
 
+</div>
+
+<!-- View Student Modal -->
+<div class="modal-overlay" *ngIf="showViewModal" (click)="closeViewModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Student Details</h3>
+      <button class="modal-close" (click)="closeViewModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body" *ngIf="selectedStudent">
+      <div class="view-section">
+        <div class="view-avatar">{{ selectedStudent.name.charAt(0) }}</div>
+        <h2 class="view-name">{{ selectedStudent.name }}</h2>
+      </div>
+
+      <div class="view-details">
+        <div class="detail-item">
+          <span class="detail-label">Roll Number:</span>
+          <span class="detail-value">{{ selectedStudent.rollNumber }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Father Name:</span>
+          <span class="detail-value">{{ selectedStudent.fatherName }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Class:</span>
+          <span class="detail-value class-badge">{{ selectedStudent.class }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Phone Number:</span>
+          <span class="detail-value">{{ selectedStudent.phone }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Address:</span>
+          <span class="detail-value">{{ selectedStudent.address }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Admission Date:</span>
+          <span class="detail-value">{{ selectedStudent.admissionDate }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Fee Status:</span>
+          <span class="status-badge" [class.status-paid]="selectedStudent.feeStatus === 'paid'" [class.status-pending]="selectedStudent.feeStatus === 'pending'">
+            {{ selectedStudent.feeStatus }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeViewModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Student Modal -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Student</h3>
+      <button class="modal-close" (click)="closeEditModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Student Name *</label>
+          <input type="text" [(ngModel)]="editStudent.name" class="form-control" placeholder="Enter student name">
+        </div>
+        <div class="form-group">
+          <label>Father Name *</label>
+          <input type="text" [(ngModel)]="editStudent.fatherName" class="form-control" placeholder="Enter father name">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Class *</label>
+          <input type="text" [(ngModel)]="editStudent.class" class="form-control" placeholder="e.g., 10-A">
+        </div>
+        <div class="form-group">
+          <label>Roll Number *</label>
+          <input type="text" [(ngModel)]="editStudent.rollNumber" class="form-control" placeholder="Enter roll number">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" [(ngModel)]="editStudent.phone" class="form-control" placeholder="0300-1234567">
+        </div>
+        <div class="form-group">
+          <label>Admission Date</label>
+          <input type="date" [(ngModel)]="editStudent.admissionDate" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fee Status</label>
+          <select [(ngModel)]="editStudent.feeStatus" class="form-control">
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input type="text" [(ngModel)]="editStudent.address" class="form-control" placeholder="Enter address">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeEditModal()">Cancel</button>
+      <button class="btn-primary" (click)="updateStudent()">Update Student</button>
+    </div>
+  </div>
 </div>
 
 <!-- Add Student Modal -->
@@ -244,6 +369,51 @@
     <div class="modal-footer">
       <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
       <button class="btn-primary" (click)="addStudent()">Add Student</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="success-modal-overlay" *ngIf="showSuccessModal">
+  <div class="success-modal">
+    <div class="success-icon-wrapper">
+      <i class="bi" [ngClass]="successIcon"></i>
+    </div>
+    <h3 class="success-title">Success!</h3>
+    <p class="success-message">{{ successMessage }}</p>
+    <button class="btn-success" (click)="closeSuccessModal()">OK</button>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header delete-header">
+      <div class="delete-icon-wrapper">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+      </div>
+      <h3>Confirm Delete</h3>
+      <button class="modal-close" (click)="closeDeleteModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body" *ngIf="studentToDelete">
+      <p class="delete-message">
+        Are you sure you want to delete <strong>{{ studentToDelete.name }}</strong>?
+      </p>
+      <p class="delete-warning">
+        <i class="bi bi-info-circle"></i>
+        This action cannot be undone. All student records will be permanently removed.
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+      <button class="btn-danger" (click)="confirmDelete()">
+        <i class="bi bi-trash-fill"></i>
+        Delete Student
+      </button>
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
 
@@ -51,7 +52,12 @@ export class Students implements OnInit {
 
   showViewModal: boolean = false;
   showEditModal: boolean = false;
+  showSuccessModal: boolean = false;
+  showDeleteModal: boolean = false;
   selectedStudent: Student | null = null;
+  studentToDelete: Student | null = null;
+  successMessage: string = '';
+  successIcon: string = '';
   editStudent: Student = {
     id: 0,
     name: '',
@@ -64,10 +70,13 @@ export class Students implements OnInit {
     feeStatus: 'pending'
   };
 
+  private apiUrl = 'http://localhost:3000/students';
+
   constructor(
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -83,15 +92,17 @@ export class Students implements OnInit {
   }
 
   loadStudents(): void {
-    // Mock data - Replace with API call
-    this.students = [
-      { id: 1, name: 'Ahmed Ali', fatherName: 'Ali Khan', class: '10-A', rollNumber: '101', phone: '0300-1234567', address: 'Karachi', admissionDate: '2024-01-15', feeStatus: 'paid' },
-      { id: 2, name: 'Sara Khan', fatherName: 'Khan Sahib', class: '9-B', rollNumber: '205', phone: '0301-2345678', address: 'Lahore', admissionDate: '2024-02-20', feeStatus: 'pending' },
-      { id: 3, name: 'Fatima Noor', fatherName: 'Noor Ahmed', class: '10-A', rollNumber: '102', phone: '0302-3456789', address: 'Islamabad', admissionDate: '2024-01-10', feeStatus: 'paid' },
-      { id: 4, name: 'Hassan Raza', fatherName: 'Raza Ali', class: '8-C', rollNumber: '308', phone: '0303-4567890', address: 'Karachi', admissionDate: '2024-03-05', feeStatus: 'pending' },
-      { id: 5, name: 'Ayesha Malik', fatherName: 'Malik Sahib', class: '9-A', rollNumber: '201', phone: '0304-5678901', address: 'Lahore', admissionDate: '2024-02-15', feeStatus: 'paid' },
-    ];
-    this.filteredStudents = [...this.students];
+    // Load students from JSON Server
+    this.http.get<Student[]>(this.apiUrl).subscribe({
+      next: (data) => {
+        this.students = data;
+        this.filteredStudents = [...this.students];
+      },
+      error: (error) => {
+        console.error('Error loading students:', error);
+        alert('Failed to load students. Please make sure JSON Server is running on port 3000.');
+      }
+    });
   }
 
   searchStudents(): void {
@@ -138,17 +149,34 @@ export class Students implements OnInit {
       return;
     }
 
-    this.newStudent.id = this.students.length + 1;
-    this.students.push({ ...this.newStudent });
-    this.filteredStudents = [...this.students];
-    this.closeAddModal();
-    
-    this.notificationService.addNotification({
-      title: 'New Student Added',
-      message: `${this.newStudent.name} has been admitted to ${this.newStudent.class}`,
-      type: 'success',
-      read: false,
-      icon: 'bi-person-plus-fill'
+    const studentName = this.newStudent.name;
+    const studentClass = this.newStudent.class;
+
+    // Remove id as JSON Server will auto-generate it
+    const { id, ...studentData } = this.newStudent;
+
+    // Save to JSON Server
+    this.http.post<Student>(this.apiUrl, studentData).subscribe({
+      next: (savedStudent) => {
+        this.students.push(savedStudent);
+        this.filteredStudents = [...this.students];
+        
+        this.closeAddModal();
+        
+        this.notificationService.addNotification({
+          title: 'New Student Added',
+          message: `${studentName} has been admitted to ${studentClass}`,
+          type: 'success',
+          read: false,
+          icon: 'bi-person-plus-fill'
+        });
+
+        this.showSuccessMessage('Student Added Successfully!', `${studentName} has been added to ${studentClass}`, 'bi-check-circle-fill');
+      },
+      error: (error) => {
+        console.error('Error adding student:', error);
+        alert('Failed to add student. Please try again.');
+      }
     });
   }
 
@@ -182,35 +210,65 @@ export class Students implements OnInit {
       return;
     }
 
-    const index = this.students.findIndex(s => s.id === this.editStudent.id);
-    if (index !== -1) {
-      this.students[index] = { ...this.editStudent };
-      this.filteredStudents = [...this.students];
-      this.closeEditModal();
-      
-      this.notificationService.addNotification({
-        title: 'Student Updated',
-        message: `${this.editStudent.name}'s information has been updated`,
-        type: 'success',
-        read: false,
-        icon: 'bi-pencil-fill'
-      });
-    }
+    const studentName = this.editStudent.name;
+
+    // Update in JSON Server
+    this.http.put<Student>(`${this.apiUrl}/${this.editStudent.id}`, this.editStudent).subscribe({
+      next: (updatedStudent) => {
+        const index = this.students.findIndex(s => s.id === this.editStudent.id);
+        if (index !== -1) {
+          this.students[index] = updatedStudent;
+          this.filteredStudents = [...this.students];
+        }
+        
+        this.closeEditModal();
+        
+        this.notificationService.addNotification({
+          title: 'Student Updated',
+          message: `${studentName}'s information has been updated`,
+          type: 'success',
+          read: false,
+          icon: 'bi-pencil-fill'
+        });
+
+        this.showSuccessMessage('Student Updated Successfully!', `${studentName}'s information has been updated`, 'bi-pencil-square');
+      },
+      error: (error) => {
+        console.error('Error updating student:', error);
+        alert('Failed to update student. Please try again.');
+      }
+    });
   }
 
-  deleteStudent(id: number): void {
+  openDeleteModal(student: Student): void {
     // Check if user has permission to delete
     if (!this.canDelete()) {
       alert('You do not have permission to delete students');
       return;
     }
 
-    if (confirm('Are you sure you want to delete this student?')) {
-      const student = this.students.find(s => s.id === id);
-      this.students = this.students.filter(s => s.id !== id);
-      this.filteredStudents = this.filteredStudents.filter(s => s.id !== id);
-      
-      if (student) {
+    this.studentToDelete = student;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.studentToDelete = null;
+  }
+
+  confirmDelete(): void {
+    if (!this.studentToDelete) return;
+
+    const student = this.studentToDelete;
+
+    // Delete from JSON Server
+    this.http.delete(`${this.apiUrl}/${student.id}`).subscribe({
+      next: () => {
+        this.students = this.students.filter(s => s.id !== student.id);
+        this.filteredStudents = this.filteredStudents.filter(s => s.id !== student.id);
+        
+        this.closeDeleteModal();
+        
         this.notificationService.addNotification({
           title: 'Student Deleted',
           message: `${student.name} has been removed from records`,
@@ -218,8 +276,28 @@ export class Students implements OnInit {
           read: false,
           icon: 'bi-trash-fill'
         });
+
+        this.showSuccessMessage('Student Deleted!', `${student.name} has been removed from records`, 'bi-trash-fill');
+      },
+      error: (error) => {
+        console.error('Error deleting student:', error);
+        alert('Failed to delete student. Please try again.');
       }
-    }
+    });
+  }
+
+  showSuccessMessage(title: string, message: string, icon: string): void {
+    this.successMessage = message;
+    this.successIcon = icon;
+    this.showSuccessModal = true;
+
+    setTimeout(() => {
+      this.showSuccessModal = false;
+    }, 3000);
+  }
+
+  closeSuccessModal(): void {
+    this.showSuccessModal = false;
   }
 
   // Role-based permission checks

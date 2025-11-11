@@ -30,11 +30,12 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
-  // School Management Routes
+  // School Management Routes (Role-based access)
   {
     path: 'students',
     component: Students,
-    canActivate: [authGuard]
+    canActivate: [roleGuard],
+    data: { roles: ['admin', 'manager', 'user'] } // Guests cannot access
   },
   {
     path: 'teachers',
