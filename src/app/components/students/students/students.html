@@ -1,0 +1,249 @@
+<div class="dashboard-wrapper">
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <div class="logo-section">
+      <div class="logo">
+        <i class="bi bi-mortarboard-fill"></i>
+      </div>
+      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">School MS</h3>
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'dashboard'" (click)="setActiveMenu('dashboard')">
+        <i class="bi bi-grid-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Dashboard</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'students'" (click)="setActiveMenu('students')">
+        <i class="bi bi-people-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Students</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'teachers'" (click)="setActiveMenu('teachers')">
+        <i class="bi bi-person-badge-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Teachers</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'classes'" (click)="setActiveMenu('classes')">
+        <i class="bi bi-book-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Classes</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'attendance'" (click)="setActiveMenu('attendance')">
+        <i class="bi bi-calendar-check-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Attendance</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'fees'" (click)="setActiveMenu('fees')">
+        <i class="bi bi-cash-coin"></i>
+        <span *ngIf="!isSidebarCollapsed">Fee Management</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'setting'" (click)="setActiveMenu('setting')">
+        <i class="bi bi-gear-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Settings</span>
+      </a>
+    </nav>
+
+    <button class="logout-btn" (click)="onLogout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!isSidebarCollapsed">Log Out</span>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div class="top-bar-right">
+        <div class="notification-wrapper">
+          <div class="notification-badge" (click)="toggleNotificationDropdown()">
+            <i class="bi bi-bell-fill"></i>
+            <span class="badge" *ngIf="notificationCount > 0">{{ notificationCount }}</span>
+          </div>
+
+          <div class="notification-dropdown" *ngIf="showNotificationDropdown">
+            <div class="notification-header">
+              <h3>Notifications</h3>
+              <button class="mark-all-read" (click)="markAllAsRead()" *ngIf="notificationCount > 0">
+                Mark all as read
+              </button>
+            </div>
+
+            <div class="notification-list">
+              <div *ngFor="let notification of notifications" 
+                   class="notification-item" 
+                   [class.unread]="!notification.read"
+                   [class.notification-success]="notification.type === 'success'"
+                   [class.notification-info]="notification.type === 'info'"
+                   [class.notification-warning]="notification.type === 'warning'"
+                   [class.notification-error]="notification.type === 'error'"
+                   (click)="markAsRead(notification.id)">
+                <div class="notification-icon">
+                  <i class="bi" [ngClass]="notification.icon"></i>
+                </div>
+                <div class="notification-content">
+                  <h4>{{ notification.title }}</h4>
+                  <p>{{ notification.message }}</p>
+                  <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
+                </div>
+                <button class="delete-notification" (click)="deleteNotification(notification.id, $event)">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>
+
+              <div class="no-notifications" *ngIf="notifications.length === 0">
+                <i class="bi bi-bell-slash"></i>
+                <p>No notifications</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="user-profile">
+          <img src="https://ui-avatars.com/api/?name={{ userName }}&background=3b82f6&color=fff" alt="User">
+          <div class="user-info">
+            <span class="user-name">{{ userName }}</span>
+            <span class="user-role" [ngClass]="getRoleBadgeClass()">{{ userRole }}</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Students Content -->
+    <div class="page-content">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h2 class="page-title">Students Management</h2>
+          <p class="page-subtitle">Manage student records and information</p>
+        </div>
+        <button class="btn-primary" (click)="openAddModal()">
+          <i class="bi bi-plus-lg"></i>
+          Add New Student
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-section">
+        <div class="search-box">
+          <i class="bi bi-search"></i>
+          <input type="text" placeholder="Search by name, roll number, or class..." [(ngModel)]="searchQuery" (input)="searchStudents()">
+        </div>
+      </div>
+
+      <!-- Students Table -->
+      <div class="table-card">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Roll No</th>
+              <th>Student Name</th>
+              <th>Father Name</th>
+              <th>Class</th>
+              <th>Phone</th>
+              <th>Admission Date</th>
+              <th>Fee Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of filteredStudents">
+              <td>{{ student.rollNumber }}</td>
+              <td>
+                <div class="student-info">
+                  <div class="student-avatar">{{ student.name.charAt(0) }}</div>
+                  <span>{{ student.name }}</span>
+                </div>
+              </td>
+              <td>{{ student.fatherName }}</td>
+              <td><span class="class-badge">{{ student.class }}</span></td>
+              <td>{{ student.phone }}</td>
+              <td>{{ student.admissionDate }}</td>
+              <td>
+                <span class="status-badge" [class.status-paid]="student.feeStatus === 'paid'" [class.status-pending]="student.feeStatus === 'pending'">
+                  {{ student.feeStatus }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-icon btn-edit" title="Edit">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn-icon btn-delete" (click)="deleteStudent(student.id)" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="no-data" *ngIf="filteredStudents.length === 0">
+          <i class="bi bi-inbox"></i>
+          <p>No students found</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- Add Student Modal -->
+<div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Student</h3>
+      <button class="modal-close" (click)="closeAddModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Student Name *</label>
+          <input type="text" [(ngModel)]="newStudent.name" class="form-control" placeholder="Enter student name">
+        </div>
+        <div class="form-group">
+          <label>Father Name *</label>
+          <input type="text" [(ngModel)]="newStudent.fatherName" class="form-control" placeholder="Enter father name">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Class *</label>
+          <input type="text" [(ngModel)]="newStudent.class" class="form-control" placeholder="e.g., 10-A">
+        </div>
+        <div class="form-group">
+          <label>Roll Number *</label>
+          <input type="text" [(ngModel)]="newStudent.rollNumber" class="form-control" placeholder="Enter roll number">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" [(ngModel)]="newStudent.phone" class="form-control" placeholder="0300-1234567">
+        </div>
+        <div class="form-group">
+          <label>Admission Date</label>
+          <input type="date" [(ngModel)]="newStudent.admissionDate" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <textarea [(ngModel)]="newStudent.address" class="form-control" rows="3" placeholder="Enter address"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn-primary" (click)="addStudent()">Add Student</button>
+    </div>
+  </div>
+</div>

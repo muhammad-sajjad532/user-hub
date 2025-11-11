@@ -96,8 +96,16 @@ export class Settings {
     this.activeMenu = menu;
     if (menu === 'dashboard') {
       this.router.navigate(['/dashboard']);
-    } else if (menu === 'users') {
-      this.router.navigate(['/users']);
+    } else if (menu === 'students') {
+      this.router.navigate(['/students']);
+    } else if (menu === 'teachers') {
+      this.router.navigate(['/teachers']);
+    } else if (menu === 'classes') {
+      this.router.navigate(['/classes']);
+    } else if (menu === 'attendance') {
+      this.router.navigate(['/attendance']);
+    } else if (menu === 'fees') {
+      this.router.navigate(['/fees']);
     } else if (menu === 'setting') {
       this.router.navigate(['/settings']);
     }

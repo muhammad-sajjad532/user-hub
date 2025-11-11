@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../services/auth';
-import { UserService } from '../../../services/user';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
 import { NotificationService, Notification } from '../../../services/notification';
@@ -31,26 +30,21 @@ export class Dashboard {
   errorMessage: string = '';
 
   // Dashboard statistics
-  totalUsers: number = 0;
-  totalProfiles: number = 0;
-  activeUsers: number = 0;
-  newToday: number = 0;
+  totalStudents: number = 0;
+  totalTeachers: number = 0;
+  presentStudents: number = 0;
+  attendancePercentage: number = 0;
+  pendingFees: number = 0;
+  pendingFeeStudents: number = 0;
 
-  // Recent activities
-  recentActivities: Array<{
-    icon: string;
-    action: string;
-    user: string;
-    time: string;
-    color: string;
-  }> = [];
+
 
   // Quick actions
   quickActions = [
-    { icon: 'bi-person-plus', title: 'Add User', description: 'Create new user profile', route: '/users', color: 'blue' },
-    { icon: 'bi-people', title: 'View Users', description: 'Manage all users', route: '/users', color: 'green' },
-    { icon: 'bi-gear', title: 'Settings', description: 'App settings', route: '/settings', color: 'purple' },
-    { icon: 'bi-file-earmark-text', title: 'Reports', description: 'View reports', route: '/dashboard', color: 'orange' }
+    { icon: 'bi-person-plus', title: 'Add Student', description: 'Register new student', route: '/students', color: 'blue' },
+    { icon: 'bi-person-badge', title: 'Add Teacher', description: 'Register new teacher', route: '/teachers', color: 'green' },
+    { icon: 'bi-calendar-check', title: 'Mark Attendance', description: 'Take today\'s attendance', route: '/attendance', color: 'purple' },
+    { icon: 'bi-cash-stack', title: 'Collect Fee', description: 'Record fee payment', route: '/fees', color: 'orange' }
   ];
 
   // Chart.js configuration for Monthly Turnover
@@ -144,7 +138,6 @@ export class Dashboard {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private userService: UserService,
     private notificationService: NotificationService
   ) {}
 
@@ -162,8 +155,7 @@ export class Dashboard {
     // Load dashboard statistics
     this.loadStatistics();
 
-    // Load recent activities
-    this.loadRecentActivities();
+
 
     // Check for error messages from route guards
     this.route.queryParams.subscribe(params => {
@@ -217,10 +209,18 @@ export class Dashboard {
     console.log('Active menu:', menu);
     
     // Navigate to different pages based on menu selection
-    if (menu === 'users') {
-      this.router.navigate(['/users']);
-    } else if (menu === 'dashboard') {
+    if (menu === 'dashboard') {
       this.router.navigate(['/dashboard']);
+    } else if (menu === 'students') {
+      this.router.navigate(['/students']);
+    } else if (menu === 'teachers') {
+      this.router.navigate(['/teachers']);
+    } else if (menu === 'classes') {
+      this.router.navigate(['/classes']);
+    } else if (menu === 'attendance') {
+      this.router.navigate(['/attendance']);
+    } else if (menu === 'fees') {
+      this.router.navigate(['/fees']);
     } else if (menu === 'setting') {
       this.router.navigate(['/settings']);
     }
@@ -267,34 +267,16 @@ export class Dashboard {
 
   // Load dashboard statistics
   loadStatistics(): void {
-    this.userService.profiles$.subscribe(profiles => {
-      this.totalProfiles = profiles.length;
-      this.totalUsers = profiles.length;
-      
-      // Calculate active users (profiles created in last 30 days)
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      this.activeUsers = profiles.filter(p => {
-        const createdDate = new Date(p.creationDate);
-        return createdDate >= thirtyDaysAgo;
-      }).length;
-
-      // Calculate new today
-      const today = new Date().toLocaleDateString();
-      this.newToday = profiles.filter(p => p.creationDate === today).length;
-    });
+    // Mock school data - Replace with actual API calls
+    this.totalStudents = 450;
+    this.totalTeachers = 35;
+    this.presentStudents = 423;
+    this.attendancePercentage = Math.round((this.presentStudents / this.totalStudents) * 100);
+    this.pendingFees = 125000;
+    this.pendingFeeStudents = 28;
   }
 
-  // Load recent activities
-  loadRecentActivities(): void {
-    this.recentActivities = [
-      { icon: 'bi-person-plus', action: 'New user registered', user: 'Muhammad Sajjad', time: '2 mins ago', color: 'green' },
-      { icon: 'bi-pencil', action: 'Profile updated', user: 'Shoaib Rehman', time: '15 mins ago', color: 'blue' },
-      { icon: 'bi-trash', action: 'User deleted', user: 'Muhammad Shahab', time: '1 hour ago', color: 'red' },
-      { icon: 'bi-person-check', action: 'User verified', user: 'Muhammad Owais', time: '2 hours ago', color: 'green' },
-      { icon: 'bi-shield-check', action: 'Role updated', user: 'Muhammad Rizwan', time: '3 hours ago', color: 'purple' }
-    ];
-  }
+
 
   // Navigate to quick action
   navigateToAction(route: string): void {

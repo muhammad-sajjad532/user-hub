@@ -6,9 +6,9 @@
     <!-- Logo Section -->
     <div class="logo-section">
       <div class="logo">
-        <i class="bi bi-people-fill"></i>
+        <i class="bi bi-mortarboard-fill"></i>
       </div>
-      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">User Hub</h3>
+      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">School MS</h3>
     </div>
 
     <!-- Menu Items -->
@@ -19,28 +19,40 @@
         <span *ngIf="!isSidebarCollapsed">Dashboard</span>
       </a>
 
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'users'"
-        (click)="setActiveMenu('users')">
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'students'"
+        (click)="setActiveMenu('students')">
         <i class="bi bi-people-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Users</span>
+        <span *ngIf="!isSidebarCollapsed">Students</span>
       </a>
 
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'report'"
-        (click)="setActiveMenu('report')">
-        <i class="bi bi-file-earmark-text-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Report</span>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'teachers'"
+        (click)="setActiveMenu('teachers')">
+        <i class="bi bi-person-badge-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Teachers</span>
       </a>
 
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'feedback'"
-        (click)="setActiveMenu('feedback')">
-        <i class="bi bi-chat-left-text-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Feedback Management</span>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'classes'"
+        (click)="setActiveMenu('classes')">
+        <i class="bi bi-book-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Classes</span>
+      </a>
+
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'attendance'"
+        (click)="setActiveMenu('attendance')">
+        <i class="bi bi-calendar-check-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Attendance</span>
+      </a>
+
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'fees'"
+        (click)="setActiveMenu('fees')">
+        <i class="bi bi-cash-coin"></i>
+        <span *ngIf="!isSidebarCollapsed">Fee Management</span>
       </a>
 
       <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'setting'"
         (click)="setActiveMenu('setting')">
         <i class="bi bi-gear-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Setting</span>
+        <span *ngIf="!isSidebarCollapsed">Settings</span>
       </a>
     </nav>
 
@@ -129,51 +141,51 @@
 
       <!-- Statistics Cards -->
       <div class="stats-grid">
-        <!-- Total Profiles -->
+        <!-- Total Students -->
         <div class="stat-card blue">
           <div class="stat-icon">
             <i class="bi bi-people-fill"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">Total Profiles</h3>
-            <p class="stat-value">{{ totalProfiles }}</p>
-            <span class="stat-change positive">+12% from last month</span>
+            <h3 class="stat-label">Total Students</h3>
+            <p class="stat-value">{{ totalStudents }}</p>
+            <span class="stat-change positive">+15 this month</span>
           </div>
         </div>
 
-        <!-- Active Users -->
+        <!-- Total Teachers -->
         <div class="stat-card green">
           <div class="stat-icon">
-            <i class="bi bi-person-check-fill"></i>
+            <i class="bi bi-person-badge-fill"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">Active Users</h3>
-            <p class="stat-value">{{ activeUsers }}</p>
-            <span class="stat-change positive">+8% from last month</span>
+            <h3 class="stat-label">Total Teachers</h3>
+            <p class="stat-value">{{ totalTeachers }}</p>
+            <span class="stat-change positive">Active</span>
           </div>
         </div>
 
-        <!-- New Today -->
+        <!-- Today's Attendance -->
         <div class="stat-card purple">
           <div class="stat-icon">
-            <i class="bi bi-person-plus-fill"></i>
+            <i class="bi bi-calendar-check-fill"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">New Today</h3>
-            <p class="stat-value">{{ newToday }}</p>
-            <span class="stat-change">Today's registrations</span>
+            <h3 class="stat-label">Today's Attendance</h3>
+            <p class="stat-value">{{ attendancePercentage }}%</p>
+            <span class="stat-change">{{ presentStudents }}/{{ totalStudents }} Present</span>
           </div>
         </div>
 
-        <!-- Total Users -->
+        <!-- Pending Fees -->
         <div class="stat-card orange">
           <div class="stat-icon">
-            <i class="bi bi-graph-up-arrow"></i>
+            <i class="bi bi-cash-coin"></i>
           </div>
           <div class="stat-info">
-            <h3 class="stat-label">Growth Rate</h3>
-            <p class="stat-value">15%</p>
-            <span class="stat-change positive">+3% from last month</span>
+            <h3 class="stat-label">Pending Fees</h3>
+            <p class="stat-value">₨{{ pendingFees.toLocaleString() }}</p>
+            <span class="stat-change negative">{{ pendingFeeStudents }} students</span>
           </div>
         </div>
       </div>
@@ -206,24 +218,6 @@
           </div>
         </div>
 
-        <!-- Recent Activities -->
-        <div class="activities-section">
-          <div class="activities-card">
-            <h3 class="activities-title">Recent Activities</h3>
-            <div class="activities-list">
-              <div *ngFor="let activity of recentActivities" class="activity-item">
-                <div class="activity-icon" [class]="activity.color">
-                  <i [class]="activity.icon"></i>
-                </div>
-                <div class="activity-content">
-                  <p class="activity-action">{{ activity.action }}</p>
-                  <p class="activity-user">{{ activity.user }}</p>
-                </div>
-                <span class="activity-time">{{ activity.time }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
     </div>

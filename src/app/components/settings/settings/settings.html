@@ -4,9 +4,9 @@
   <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
     <div class="logo-section">
       <div class="logo">
-        <i class="bi bi-people-fill"></i>
+        <i class="bi bi-mortarboard-fill"></i>
       </div>
-      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">User Hub</h3>
+      <h3 class="logo-text" *ngIf="!isSidebarCollapsed">School MS</h3>
     </div>
 
     <nav class="sidebar-menu">
@@ -14,17 +14,25 @@
         <i class="bi bi-grid-fill"></i>
         <span *ngIf="!isSidebarCollapsed">Dashboard</span>
       </a>
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'users'" (click)="setActiveMenu('users')">
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'students'" (click)="setActiveMenu('students')">
         <i class="bi bi-people-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Users</span>
+        <span *ngIf="!isSidebarCollapsed">Students</span>
       </a>
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'report'" (click)="setActiveMenu('report')">
-        <i class="bi bi-file-earmark-text-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Report</span>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'teachers'" (click)="setActiveMenu('teachers')">
+        <i class="bi bi-person-badge-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Teachers</span>
       </a>
-      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'feedback'" (click)="setActiveMenu('feedback')">
-        <i class="bi bi-chat-left-text-fill"></i>
-        <span *ngIf="!isSidebarCollapsed">Feedback</span>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'classes'" (click)="setActiveMenu('classes')">
+        <i class="bi bi-book-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Classes</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'attendance'" (click)="setActiveMenu('attendance')">
+        <i class="bi bi-calendar-check-fill"></i>
+        <span *ngIf="!isSidebarCollapsed">Attendance</span>
+      </a>
+      <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'fees'" (click)="setActiveMenu('fees')">
+        <i class="bi bi-cash-coin"></i>
+        <span *ngIf="!isSidebarCollapsed">Fee Management</span>
       </a>
       <a href="javascript:void(0)" class="menu-item" [class.active]="activeMenu === 'setting'" (click)="setActiveMenu('setting')">
         <i class="bi bi-gear-fill"></i>

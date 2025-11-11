@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { Signup } from './components/signup/signup/signup';
 import { Login } from './components/login/login/login';
 import { Dashboard } from './components/dashboard/dashboard/dashboard';
-import { Users } from './components/users/users/users';
+import { Students } from './components/students/students/students';
 import { Settings } from './components/settings/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
@@ -30,12 +30,31 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
 
-  // Role-based routes (admin, manager, user only - guests cannot access)
+  // School Management Routes
   {
-    path: 'users',
-    component: Users,
-    canActivate: [roleGuard],
-    data: { roles: ['admin', 'manager', 'user'] }
+    path: 'students',
+    component: Students,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'teachers',
+    redirectTo: '/students',
+    pathMatch: 'full'
+  },
+  {
+    path: 'classes',
+    redirectTo: '/students',
+    pathMatch: 'full'
+  },
+  {
+    path: 'attendance',
+    redirectTo: '/students',
+    pathMatch: 'full'
+  },
+  {
+    path: 'fees',
+    redirectTo: '/students',
+    pathMatch: 'full'
   },
 
   // Settings (any authenticated user)

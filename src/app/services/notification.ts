@@ -26,8 +26,8 @@ export class NotificationService {
     const mockNotifications: Notification[] = [
       {
         id: 1,
-        title: 'New User Registered',
-        message: 'John Doe has registered as a new user',
+        title: 'New Student Admission',
+        message: 'Ahmed Ali has been admitted to Class 10-A',
         type: 'success',
         timestamp: new Date(Date.now() - 5 * 60000),
         read: false,
@@ -35,26 +35,26 @@ export class NotificationService {
       },
       {
         id: 2,
-        title: 'System Update',
-        message: 'System will be updated tonight at 2 AM',
+        title: 'Parent-Teacher Meeting',
+        message: 'PTM scheduled for Saturday, 10 AM in main hall',
         type: 'info',
         timestamp: new Date(Date.now() - 30 * 60000),
         read: false,
-        icon: 'bi-info-circle-fill'
+        icon: 'bi-calendar-event-fill'
       },
       {
         id: 3,
-        title: 'Password Changed',
-        message: 'Your password was successfully changed',
+        title: 'Fee Payment Received',
+        message: 'Monthly fee received from Sara Khan (Class 9-B)',
         type: 'success',
         timestamp: new Date(Date.now() - 2 * 60 * 60000),
         read: true,
-        icon: 'bi-shield-check'
+        icon: 'bi-cash-coin'
       },
       {
         id: 4,
-        title: 'Low Storage Warning',
-        message: 'Storage is running low. Please free up space',
+        title: 'Low Attendance Alert',
+        message: 'Class 8-C has only 65% attendance today',
         type: 'warning',
         timestamp: new Date(Date.now() - 5 * 60 * 60000),
         read: false,
@@ -62,12 +62,12 @@ export class NotificationService {
       },
       {
         id: 5,
-        title: 'Failed Login Attempt',
-        message: 'Someone tried to access your account',
-        type: 'error',
+        title: 'Exam Schedule Updated',
+        message: 'Mid-term exams will start from 15th December',
+        type: 'info',
         timestamp: new Date(Date.now() - 24 * 60 * 60000),
         read: true,
-        icon: 'bi-shield-exclamation'
+        icon: 'bi-journal-text'
       }
     ];
     this.notificationsSubject.next(mockNotifications);
