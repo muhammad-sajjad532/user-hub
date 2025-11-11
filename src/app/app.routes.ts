@@ -3,6 +3,7 @@ import { Signup } from './components/signup/signup/signup';
 import { Login } from './components/login/login/login';
 import { Dashboard } from './components/dashboard/dashboard/dashboard';
 import { Students } from './components/students/students/students';
+import { Teachers } from './components/teachers/teachers/teachers';
 import { Settings } from './components/settings/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
@@ -39,8 +40,9 @@ export const routes: Routes = [
   },
   {
     path: 'teachers',
-    redirectTo: '/students',
-    pathMatch: 'full'
+    component: Teachers,
+    canActivate: [roleGuard],
+    data: { roles: ['admin', 'manager', 'user'] }
   },
   {
     path: 'classes',

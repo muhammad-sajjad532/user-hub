@@ -56,150 +56,96 @@
       "feeStatus": "paid"
     }
   ],
-  "profiles": [
+  "teachers": [
     {
-      "id": "9",
-      "profileName": "Hamid",
-      "description": "Senior Angular Developer",
-      "creationDate": "28-08-2025"
+      "id": 1,
+      "name": "Dr. Muhammad Asif",
+      "qualification": "PhD in Mathematics",
+      "subject": "Mathematics",
+      "phone": "0321-1234567",
+      "email": "asif@school.com",
+      "address": "Karachi",
+      "joiningDate": "2020-01-15",
+      "salary": 80000,
+      "status": "active"
     },
     {
-      "id": "a58b",
-      "profileName": "Muhammad Sajjad",
-      "description": "Front-end web developer",
-      "creationDate": "04-11-2025"
+      "id": 2,
+      "name": "Ms. Sana Ahmed",
+      "qualification": "MSc Physics",
+      "subject": "Physics",
+      "phone": "0322-2345678",
+      "email": "sana@school.com",
+      "address": "Lahore",
+      "joiningDate": "2021-03-20",
+      "salary": 70000,
+      "status": "active"
     },
     {
-      "id": "8adc",
-      "profileName": "Owais",
-      "description": "Full Stack Developer/Mern",
-      "creationDate": "04-11-2025"
+      "id": 3,
+      "name": "Mr. Ali Raza",
+      "qualification": "MA English",
+      "subject": "English",
+      "phone": "0323-3456789",
+      "email": "ali@school.com",
+      "address": "Islamabad",
+      "joiningDate": "2019-08-10",
+      "salary": 75000,
+      "status": "active"
     },
     {
-      "id": "db8f",
-      "profileName": "Shoaib Rehman",
-      "description": "Mean/Mern",
-      "creationDate": "04-11-2025"
+      "id": 4,
+      "name": "Mrs. Fatima Khan",
+      "qualification": "MSc Chemistry",
+      "subject": "Chemistry",
+      "phone": "0324-4567890",
+      "email": "fatima@school.com",
+      "address": "Karachi",
+      "joiningDate": "2022-01-05",
+      "salary": 65000,
+      "status": "active"
     },
     {
-      "id": "c35a",
-      "profileName": "Muhammad Rizwan",
-      "description": "Backend Developer",
-      "creationDate": "04-11-2025"
-    },
-    {
-      "id": "72a1",
-      "profileName": "Muhammad Shahab",
-      "description": "Student",
-      "creationDate": "04-11-2025"
-    },
-    {
-      "id": "a0b6",
-      "profileName": "Ahmad Ali Rabbani",
-      "description": "React Developer",
-      "creationDate": "04-11-2025"
-    },
-    {
-      "id": "7978",
-      "profileName": "Sahil",
-      "description": "Vue developer",
-      "creationDate": "04-11-2025"
-    },
-    {
-      "id": "c028",
-      "profileName": "Sajjad Bangash",
-      "description": "Jr. Angular Developer",
-      "creationDate": "05-11-2025"
-    },
-    {
-      "id": "9224",
-      "profileName": "Azmat Khan",
-      "description": "CEO/Founder",
-      "creationDate": "05-11-2025"
-    },
-    {
-      "id": "40fe",
-      "profileName": "khan bangash",
-      "description": "Full stack",
-      "creationDate": "05-11-2025"
-    },
-    {
-      "id": "7656",
-      "profileName": "Umair",
-      "description": "Java Developer",
-      "creationDate": "06-11-2025"
-    },
-    {
-      "id": "459e",
-      "profileName": "Random Developer",
-      "description": "xyz",
-      "creationDate": "06-11-2025"
-    },
-    {
-      "id": "a387",
-      "profileName": "sajjad bangash",
-      "description": "senior angular developer",
-      "creationDate": "07-11-2025"
+      "id": 5,
+      "name": "Mr. Hassan Malik",
+      "qualification": "MSc Computer Science",
+      "subject": "Computer Science",
+      "phone": "0325-5678901",
+      "email": "hassan@school.com",
+      "address": "Lahore",
+      "joiningDate": "2023-02-15",
+      "salary": 85000,
+      "status": "active"
     }
   ],
   "users": [
     {
       "id": "1",
-      "email": "admin@userhub.com",
+      "email": "admin@school.com",
       "password": "admin123",
       "name": "Admin User",
-      "role": "admin",
-      "permissions": [
-        "read",
-        "write",
-        "delete",
-        "manage_users"
-      ]
+      "role": "admin"
     },
     {
       "id": "2",
-      "email": "manager@userhub.com",
+      "email": "manager@school.com",
       "password": "manager123",
       "name": "Manager User",
-      "role": "manager",
-      "permissions": [
-        "read",
-        "write",
-        "delete"
-      ]
+      "role": "manager"
     },
     {
       "id": "3",
-      "email": "user@userhub.com",
+      "email": "user@school.com",
       "password": "user123",
       "name": "Regular User",
-      "role": "user",
-      "permissions": [
-        "read",
-        "write"
-      ]
+      "role": "user"
     },
     {
       "id": "4",
-      "email": "guest@userhub.com",
+      "email": "guest@school.com",
       "password": "guest123",
       "name": "Guest User",
-      "role": "guest",
-      "permissions": [
-        "read"
-      ]
-    },
-    {
-      "id": "4e68",
-      "email": "sajjad@gmail.com",
-      "name": "sajjad khan",
-      "role": "user",
-      "permissions": [
-        "read",
-        "write"
-      ],
-      "loginTime": "2025-11-10T06:23:15.618Z",
-      "password": "khan000"
+      "role": "guest"
     }
   ]
 }
