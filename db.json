@@ -1,7 +1,7 @@
 {
   "students": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Ahmed Ali",
       "fatherName": "Ali Khan",
       "class": "10-A",
@@ -12,7 +12,7 @@
       "feeStatus": "paid"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Sara Khan",
       "fatherName": "Khan Sahib",
       "class": "9-B",
@@ -23,7 +23,7 @@
       "feeStatus": "pending"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Fatima Noor",
       "fatherName": "Noor Ahmed",
       "class": "10-A",
@@ -34,7 +34,7 @@
       "feeStatus": "paid"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Hassan Raza",
       "fatherName": "Raza Ali",
       "class": "8-C",
@@ -45,7 +45,7 @@
       "feeStatus": "pending"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Ayesha Malik",
       "fatherName": "Malik Sahib",
       "class": "9-A",
@@ -54,11 +54,268 @@
       "address": "Lahore",
       "admissionDate": "2024-02-15",
       "feeStatus": "paid"
+    },
+    {
+      "id": "6237",
+      "name": "Muhammad Sajjad",
+      "fatherName": "Azmat Khan",
+      "class": "10-C",
+      "rollNumber": "2001",
+      "phone": "0334-7166144",
+      "address": "islamabad",
+      "admissionDate": "2025-11-18",
+      "feeStatus": "pending"
+    }
+  ],
+  "fees": [
+    {
+      "id": 1,
+      "studentId": 1,
+      "studentName": "Ahmed Ali",
+      "class": "10-A",
+      "rollNumber": "101",
+      "monthlyFee": 5000,
+      "totalPaid": 5000,
+      "totalPending": 0,
+      "lastPaymentDate": "2024-11-01",
+      "lastPaymentAmount": 5000,
+      "status": "paid",
+      "dueDate": "2024-12-05"
+    },
+    {
+      "id": 2,
+      "studentId": 2,
+      "studentName": "Sara Khan",
+      "class": "9-B",
+      "rollNumber": "205",
+      "monthlyFee": 4500,
+      "totalPaid": 0,
+      "totalPending": 4500,
+      "lastPaymentDate": "",
+      "lastPaymentAmount": 0,
+      "status": "pending",
+      "dueDate": "2024-11-05"
+    },
+    {
+      "id": 3,
+      "studentId": 3,
+      "studentName": "Fatima Noor",
+      "class": "10-A",
+      "rollNumber": "102",
+      "monthlyFee": 5000,
+      "totalPaid": 5000,
+      "totalPending": 0,
+      "lastPaymentDate": "2024-11-03",
+      "lastPaymentAmount": 5000,
+      "status": "paid",
+      "dueDate": "2024-12-05"
+    },
+    {
+      "id": 4,
+      "studentId": 4,
+      "studentName": "Hassan Raza",
+      "class": "8-C",
+      "rollNumber": "308",
+      "monthlyFee": 4000,
+      "totalPaid": 2000,
+      "totalPending": 2000,
+      "lastPaymentDate": "2024-10-15",
+      "lastPaymentAmount": 2000,
+      "status": "partial",
+      "dueDate": "2024-11-05"
+    },
+    {
+      "id": 5,
+      "studentId": 5,
+      "studentName": "Ayesha Malik",
+      "class": "9-A",
+      "rollNumber": "201",
+      "monthlyFee": 4500,
+      "totalPaid": 4500,
+      "totalPending": 0,
+      "lastPaymentDate": "2024-11-02",
+      "lastPaymentAmount": 4500,
+      "status": "paid",
+      "dueDate": "2024-12-05"
+    }
+  ],
+  "attendance": [
+    {
+      "id": 1,
+      "date": "2024-11-18",
+      "studentId": 1,
+      "studentName": "Ahmed Ali",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Dr. Muhammad Asif",
+      "remarks": ""
+    },
+    {
+      "id": 2,
+      "date": "2024-11-18",
+      "studentId": 2,
+      "studentName": "Sara Khan",
+      "class": "9-B",
+      "status": "present",
+      "markedBy": "Ms. Sana Ahmed",
+      "remarks": ""
+    },
+    {
+      "id": 3,
+      "date": "2024-11-18",
+      "studentId": 3,
+      "studentName": "Fatima Noor",
+      "class": "10-A",
+      "status": "absent",
+      "markedBy": "Dr. Muhammad Asif",
+      "remarks": "Sick leave"
+    },
+    {
+      "id": 4,
+      "date": "2024-11-18",
+      "studentId": 4,
+      "studentName": "Hassan Raza",
+      "class": "8-C",
+      "status": "present",
+      "markedBy": "Mrs. Fatima Khan",
+      "remarks": ""
+    },
+    {
+      "id": 5,
+      "date": "2024-11-18",
+      "studentId": 5,
+      "studentName": "Ayesha Malik",
+      "class": "9-A",
+      "status": "late",
+      "markedBy": "Mr. Hassan Malik",
+      "remarks": "Arrived 30 mins late"
+    },
+    {
+      "id": "3990",
+      "date": "2025-11-18",
+      "studentId": "1",
+      "studentName": "Ahmed Ali",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "55c4",
+      "date": "2025-11-18",
+      "studentId": "2",
+      "studentName": "Sara Khan",
+      "class": "9-B",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "3b71",
+      "date": "2025-11-18",
+      "studentId": "6237",
+      "studentName": "Muhammad Sajjad",
+      "class": "10-C",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "d18d",
+      "date": "2025-11-18",
+      "studentId": "3",
+      "studentName": "Fatima Noor",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "1b10",
+      "date": "2025-11-18",
+      "studentId": "5",
+      "studentName": "Ayesha Malik",
+      "class": "9-A",
+      "status": "late",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "88ed",
+      "date": "2025-11-18",
+      "studentId": "4",
+      "studentName": "Hassan Raza",
+      "class": "8-C",
+      "status": "absent",
+      "markedBy": "Admin User",
+      "remarks": ""
+    }
+  ],
+  "classes": [
+    {
+      "id": 1,
+      "name": "Class 10-A",
+      "grade": "10",
+      "section": "A",
+      "classTeacher": "Dr. Muhammad Asif",
+      "subject": "Mathematics",
+      "room": "Room 101",
+      "totalStudents": 35,
+      "schedule": "Mon-Fri, 8:00 AM - 2:00 PM",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Class 9-B",
+      "grade": "9",
+      "section": "B",
+      "classTeacher": "Ms. Sana Ahmed",
+      "subject": "Physics",
+      "room": "Room 205",
+      "totalStudents": 32,
+      "schedule": "Mon-Fri, 8:00 AM - 2:00 PM",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "name": "Class 10-B",
+      "grade": "10",
+      "section": "B",
+      "classTeacher": "Mr. Ali Raza",
+      "subject": "English",
+      "room": "Room 102",
+      "totalStudents": 30,
+      "schedule": "Mon-Fri, 8:00 AM - 2:00 PM",
+      "status": "active"
+    },
+    {
+      "id": 4,
+      "name": "Class 8-C",
+      "grade": "8",
+      "section": "C",
+      "classTeacher": "Mrs. Fatima Khan",
+      "subject": "Chemistry",
+      "room": "Room 308",
+      "totalStudents": 28,
+      "schedule": "Mon-Fri, 8:00 AM - 2:00 PM",
+      "status": "active"
+    },
+    {
+      "id": 5,
+      "name": "Class 9-A",
+      "grade": "9",
+      "section": "A",
+      "classTeacher": "Mr. Hassan Malik",
+      "subject": "Computer Science",
+      "room": "Lab 201",
+      "totalStudents": 25,
+      "schedule": "Mon-Fri, 8:00 AM - 2:00 PM",
+      "status": "active"
     }
   ],
   "teachers": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Dr. Muhammad Asif",
       "qualification": "PhD in Mathematics",
       "subject": "Mathematics",
@@ -70,7 +327,7 @@
       "status": "active"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Ms. Sana Ahmed",
       "qualification": "MSc Physics",
       "subject": "Physics",
@@ -82,7 +339,7 @@
       "status": "active"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Mr. Ali Raza",
       "qualification": "MA English",
       "subject": "English",
@@ -94,7 +351,7 @@
       "status": "active"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Mrs. Fatima Khan",
       "qualification": "MSc Chemistry",
       "subject": "Chemistry",
@@ -106,7 +363,7 @@
       "status": "active"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Mr. Hassan Malik",
       "qualification": "MSc Computer Science",
       "subject": "Computer Science",
@@ -116,6 +373,18 @@
       "joiningDate": "2023-02-15",
       "salary": 85000,
       "status": "active"
+    },
+    {
+      "id": "5e0c",
+      "name": "Mr. Shoaib Rehman",
+      "qualification": "BS Software Engineering",
+      "subject": "Web Development",
+      "phone": "03347166144",
+      "email": "shoaib@school.com",
+      "address": "street 49, G11/2 islamabad",
+      "joiningDate": "2025-11-11",
+      "salary": 449981,
+      "status": "active"
     }
   ],
   "users": [
@@ -124,28 +393,46 @@
       "email": "admin@school.com",
       "password": "admin123",
       "name": "Admin User",
-      "role": "admin"
+      "role": "admin",
+      "permissions": [
+        "read",
+        "write",
+        "delete",
+        "manage_users"
+      ]
     },
     {
       "id": "2",
       "email": "manager@school.com",
       "password": "manager123",
       "name": "Manager User",
-      "role": "manager"
+      "role": "manager",
+      "permissions": [
+        "read",
+        "write",
+        "delete"
+      ]
     },
     {
       "id": "3",
       "email": "user@school.com",
       "password": "user123",
       "name": "Regular User",
-      "role": "user"
+      "role": "user",
+      "permissions": [
+        "read",
+        "write"
+      ]
     },
     {
       "id": "4",
       "email": "guest@school.com",
       "password": "guest123",
       "name": "Guest User",
-      "role": "guest"
+      "role": "guest",
+      "permissions": [
+        "read"
+      ]
     }
   ]
 }

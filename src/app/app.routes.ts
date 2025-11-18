@@ -4,6 +4,9 @@ import { Login } from './components/login/login/login';
 import { Dashboard } from './components/dashboard/dashboard/dashboard';
 import { Students } from './components/students/students/students';
 import { Teachers } from './components/teachers/teachers/teachers';
+import { Classes } from './components/classes/classes/classes';
+import { Attendance } from './components/attendance/attendance/attendance';
+import { Fees } from './components/fees/fees/fees';
 import { Settings } from './components/settings/settings/settings';
 import { authGuard } from './guards/auth-guard';
 import { roleGuard } from './guards/role-guard';
@@ -46,18 +49,21 @@ export const routes: Routes = [
   },
   {
     path: 'classes',
-    redirectTo: '/students',
-    pathMatch: 'full'
+    component: Classes,
+    canActivate: [roleGuard],
+    data: { roles: ['admin', 'manager', 'user'] }
   },
   {
     path: 'attendance',
-    redirectTo: '/students',
-    pathMatch: 'full'
+    component: Attendance,
+    canActivate: [roleGuard],
+    data: { roles: ['admin', 'manager', 'user'] }
   },
   {
     path: 'fees',
-    redirectTo: '/students',
-    pathMatch: 'full'
+    component: Fees,
+    canActivate: [roleGuard],
+    data: { roles: ['admin', 'manager', 'user'] }
   },
 
   // Settings (any authenticated user)
