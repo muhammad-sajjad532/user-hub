@@ -5,17 +5,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
-
-interface AttendanceRecord {
-  id: number;
-  date: string;
-  studentId: number;
-  studentName: string;
-  class: string;
-  status: 'present' | 'absent' | 'late';
-  markedBy: string;
-  remarks: string;
-}
+import { AttendanceService, AttendanceRecord } from '../../../services/attendance.service';
 
 interface Student {
   id: number;
@@ -58,13 +48,13 @@ export class Attendance implements OnInit {
   totalLate: number = 0;
   attendancePercentage: number = 0;
 
-  private attendanceUrl = 'http://localhost:3000/attendance';
   private studentsUrl = 'http://localhost:3000/students';
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private attendanceService: AttendanceService,
     private http: HttpClient
   ) {}
 
@@ -96,7 +86,7 @@ export class Attendance implements OnInit {
   }
 
   loadAttendance(): void {
-    this.http.get<AttendanceRecord[]>(this.attendanceUrl).subscribe({
+    this.attendanceService.getAll().subscribe({
       next: (data) => {
         this.attendanceRecords = data;
         this.filterAttendance();
@@ -173,7 +163,7 @@ export class Attendance implements OnInit {
       // Update existing record
       const updatedRecord = { ...existingRecord, status, markedBy: this.userName };
       
-      this.http.put<AttendanceRecord>(`${this.attendanceUrl}/${existingRecord.id}`, updatedRecord).subscribe({
+      this.attendanceService.update(existingRecord.id, updatedRecord).subscribe({
         next: (updated) => {
           const index = this.attendanceRecords.findIndex(r => r.id === existingRecord.id);
           if (index !== -1) {
@@ -199,7 +189,7 @@ export class Attendance implements OnInit {
         remarks: ''
       };
 
-      this.http.post<AttendanceRecord>(this.attendanceUrl, newRecord).subscribe({
+      this.attendanceService.create(newRecord).subscribe({
         next: (created) => {
           this.attendanceRecords.push(created);
           this.filterAttendance();

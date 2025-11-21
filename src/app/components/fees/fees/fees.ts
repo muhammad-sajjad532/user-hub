@@ -2,24 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
-
-interface FeeRecord {
-  id: number;
-  studentId: number;
-  studentName: string;
-  class: string;
-  rollNumber: string;
-  monthlyFee: number;
-  totalPaid: number;
-  totalPending: number;
-  lastPaymentDate: string;
-  lastPaymentAmount: number;
-  status: 'paid' | 'pending' | 'partial';
-  dueDate: string;
-}
+import { FeeService, FeeRecord } from '../../../services/fee.service';
 
 @Component({
   selector: 'app-fees',
@@ -55,13 +40,11 @@ export class Fees implements OnInit {
   totalStudents: number = 0;
   collectionPercentage: number = 0;
 
-  private apiUrl = 'http://localhost:3000/fees';
-
   constructor(
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private http: HttpClient
+    private feeService: FeeService
   ) {}
 
   ngOnInit(): void {
@@ -77,7 +60,7 @@ export class Fees implements OnInit {
   }
 
   loadFees(): void {
-    this.http.get<FeeRecord[]>(this.apiUrl).subscribe({
+    this.feeService.getAll().subscribe({
       next: (data) => {
         this.feeRecords = data;
         this.filteredRecords = [...data];
@@ -147,17 +130,20 @@ export class Fees implements OnInit {
       return;
     }
 
-    const updatedRecord = {
+    const newStatus: 'paid' | 'pending' | 'partial' = 
+      (this.selectedRecord.totalPending - this.paymentAmount) === 0 ? 'paid' : 
+      (this.selectedRecord.totalPaid + this.paymentAmount) > 0 ? 'partial' : 'pending';
+
+    const updatedRecord: FeeRecord = {
       ...this.selectedRecord,
       totalPaid: this.selectedRecord.totalPaid + this.paymentAmount,
       totalPending: this.selectedRecord.totalPending - this.paymentAmount,
       lastPaymentDate: this.paymentDate,
       lastPaymentAmount: this.paymentAmount,
-      status: (this.selectedRecord.totalPending - this.paymentAmount) === 0 ? 'paid' : 
-              (this.selectedRecord.totalPaid + this.paymentAmount) > 0 ? 'partial' : 'pending'
+      status: newStatus
     };
 
-    this.http.put<FeeRecord>(`${this.apiUrl}/${this.selectedRecord.id}`, updatedRecord).subscribe({
+    this.feeService.update(this.selectedRecord.id, updatedRecord).subscribe({
       next: (updated) => {
         const index = this.feeRecords.findIndex(r => r.id === this.selectedRecord!.id);
         if (index !== -1) {

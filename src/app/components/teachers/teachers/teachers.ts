@@ -2,22 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
-
-interface Teacher {
-  id: number;
-  name: string;
-  qualification: string;
-  subject: string;
-  phone: string;
-  email: string;
-  address: string;
-  joiningDate: string;
-  salary: number;
-  status: 'active' | 'inactive';
-}
+import { TeacherService, Teacher } from '../../../services/teacher.service';
 
 @Component({
   selector: 'app-teachers',
@@ -73,13 +60,11 @@ export class Teachers implements OnInit {
     status: 'active'
   };
 
-  private apiUrl = 'http://localhost:3000/teachers';
-
   constructor(
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private http: HttpClient
+    private teacherService: TeacherService
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +80,7 @@ export class Teachers implements OnInit {
   }
 
   loadTeachers(): void {
-    this.http.get<Teacher[]>(this.apiUrl).subscribe({
+    this.teacherService.getAll().subscribe({
       next: (data) => {
         this.teachers = data;
         this.filteredTeachers = [...this.teachers];
@@ -154,7 +139,7 @@ export class Teachers implements OnInit {
     const teacherName = this.newTeacher.name;
     const { id, ...teacherData } = this.newTeacher;
 
-    this.http.post<Teacher>(this.apiUrl, teacherData).subscribe({
+    this.teacherService.create(teacherData).subscribe({
       next: (savedTeacher) => {
         this.teachers.push(savedTeacher);
         this.filteredTeachers = [...this.teachers];
@@ -208,7 +193,7 @@ export class Teachers implements OnInit {
 
     const teacherName = this.editTeacher.name;
 
-    this.http.put<Teacher>(`${this.apiUrl}/${this.editTeacher.id}`, this.editTeacher).subscribe({
+    this.teacherService.update(this.editTeacher.id, this.editTeacher).subscribe({
       next: (updatedTeacher) => {
         const index = this.teachers.findIndex(t => t.id === this.editTeacher.id);
         if (index !== -1) {
@@ -255,7 +240,7 @@ export class Teachers implements OnInit {
 
     const teacher = this.teacherToDelete;
 
-    this.http.delete(`${this.apiUrl}/${teacher.id}`).subscribe({
+    this.teacherService.delete(teacher.id).subscribe({
       next: () => {
         this.teachers = this.teachers.filter(t => t.id !== teacher.id);
         this.filteredTeachers = this.filteredTeachers.filter(t => t.id !== teacher.id);

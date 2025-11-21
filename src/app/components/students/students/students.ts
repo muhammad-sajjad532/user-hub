@@ -2,21 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
-
-interface Student {
-  id: number;
-  name: string;
-  fatherName: string;
-  class: string;
-  rollNumber: string;
-  phone: string;
-  address: string;
-  admissionDate: string;
-  feeStatus: 'paid' | 'pending';
-}
+import { StudentService, Student } from '../../../services/student.service';
 
 @Component({
   selector: 'app-students',
@@ -37,7 +25,7 @@ export class Students implements OnInit {
   filteredStudents: Student[] = [];
   searchQuery: string = '';
   showAddModal: boolean = false;
-  
+
   newStudent: Student = {
     id: 0,
     name: '',
@@ -70,19 +58,17 @@ export class Students implements OnInit {
     feeStatus: 'pending'
   };
 
-  private apiUrl = 'http://localhost:3000/students';
-
   constructor(
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private http: HttpClient
-  ) {}
+    private studentService: StudentService
+  ) { }
 
   ngOnInit(): void {
     this.userName = this.authService.getUserName();
     this.userRole = this.authService.getUserRole() || 'user';
-    
+
     this.notificationService.notifications$.subscribe(notifications => {
       this.notifications = notifications;
       this.notificationCount = this.notificationService.getUnreadCount();
@@ -92,16 +78,9 @@ export class Students implements OnInit {
   }
 
   loadStudents(): void {
-    // Load students from JSON Server
-    this.http.get<Student[]>(this.apiUrl).subscribe({
-      next: (data) => {
-        this.students = data;
-        this.filteredStudents = [...this.students];
-      },
-      error: (error) => {
-        console.error('Error loading students:', error);
-        alert('Failed to load students. Please make sure JSON Server is running on port 3000.');
-      }
+    this.studentService.getAll().subscribe((data) => {
+      this.students = data;
+      this.filteredStudents = [...data];
     });
   }
 
@@ -110,7 +89,7 @@ export class Students implements OnInit {
       this.filteredStudents = [...this.students];
       return;
     }
-    
+
     const query = this.searchQuery.toLowerCase();
     this.filteredStudents = this.students.filter(student =>
       student.name.toLowerCase().includes(query) ||
@@ -149,34 +128,21 @@ export class Students implements OnInit {
       return;
     }
 
-    const studentName = this.newStudent.name;
-    const studentClass = this.newStudent.class;
-
-    // Remove id as JSON Server will auto-generate it
+    const { name, class: studentClass } = this.newStudent;
     const { id, ...studentData } = this.newStudent;
 
-    // Save to JSON Server
-    this.http.post<Student>(this.apiUrl, studentData).subscribe({
-      next: (savedStudent) => {
-        this.students.push(savedStudent);
-        this.filteredStudents = [...this.students];
-        
-        this.closeAddModal();
-        
-        this.notificationService.addNotification({
-          title: 'New Student Added',
-          message: `${studentName} has been admitted to ${studentClass}`,
-          type: 'success',
-          read: false,
-          icon: 'bi-person-plus-fill'
-        });
-
-        this.showSuccessMessage('Student Added Successfully!', `${studentName} has been added to ${studentClass}`, 'bi-check-circle-fill');
-      },
-      error: (error) => {
-        console.error('Error adding student:', error);
-        alert('Failed to add student. Please try again.');
-      }
+    this.studentService.create(studentData).subscribe((saved) => {
+      this.students.push(saved);
+      this.filteredStudents = [...this.students];
+      this.closeAddModal();
+      this.notificationService.addNotification({
+        title: 'New Student Added',
+        message: `${name} has been admitted to ${studentClass}`,
+        type: 'success',
+        read: false,
+        icon: 'bi-person-plus-fill'
+      });
+      this.showSuccessMessage('Student Added Successfully!', `${name} has been added to ${studentClass}`, 'bi-check-circle-fill');
     });
   }
 
@@ -210,33 +176,23 @@ export class Students implements OnInit {
       return;
     }
 
-    const studentName = this.editStudent.name;
+    const { name, id } = this.editStudent;
 
-    // Update in JSON Server
-    this.http.put<Student>(`${this.apiUrl}/${this.editStudent.id}`, this.editStudent).subscribe({
-      next: (updatedStudent) => {
-        const index = this.students.findIndex(s => s.id === this.editStudent.id);
-        if (index !== -1) {
-          this.students[index] = updatedStudent;
-          this.filteredStudents = [...this.students];
-        }
-        
-        this.closeEditModal();
-        
-        this.notificationService.addNotification({
-          title: 'Student Updated',
-          message: `${studentName}'s information has been updated`,
-          type: 'success',
-          read: false,
-          icon: 'bi-pencil-fill'
-        });
-
-        this.showSuccessMessage('Student Updated Successfully!', `${studentName}'s information has been updated`, 'bi-pencil-square');
-      },
-      error: (error) => {
-        console.error('Error updating student:', error);
-        alert('Failed to update student. Please try again.');
+    this.studentService.update(id, this.editStudent).subscribe((updated) => {
+      const index = this.students.findIndex(s => s.id === id);
+      if (index !== -1) {
+        this.students[index] = updated;
+        this.filteredStudents = [...this.students];
       }
+      this.closeEditModal();
+      this.notificationService.addNotification({
+        title: 'Student Updated',
+        message: `${name}'s information has been updated`,
+        type: 'success',
+        read: false,
+        icon: 'bi-pencil-fill'
+      });
+      this.showSuccessMessage('Student Updated Successfully!', `${name}'s information has been updated`, 'bi-pencil-square');
     });
   }
 
@@ -259,30 +215,20 @@ export class Students implements OnInit {
   confirmDelete(): void {
     if (!this.studentToDelete) return;
 
-    const student = this.studentToDelete;
+    const { id, name } = this.studentToDelete;
 
-    // Delete from JSON Server
-    this.http.delete(`${this.apiUrl}/${student.id}`).subscribe({
-      next: () => {
-        this.students = this.students.filter(s => s.id !== student.id);
-        this.filteredStudents = this.filteredStudents.filter(s => s.id !== student.id);
-        
-        this.closeDeleteModal();
-        
-        this.notificationService.addNotification({
-          title: 'Student Deleted',
-          message: `${student.name} has been removed from records`,
-          type: 'error',
-          read: false,
-          icon: 'bi-trash-fill'
-        });
-
-        this.showSuccessMessage('Student Deleted!', `${student.name} has been removed from records`, 'bi-trash-fill');
-      },
-      error: (error) => {
-        console.error('Error deleting student:', error);
-        alert('Failed to delete student. Please try again.');
-      }
+    this.studentService.delete(id).subscribe(() => {
+      this.students = this.students.filter(s => s.id !== id);
+      this.filteredStudents = this.filteredStudents.filter(s => s.id !== id);
+      this.closeDeleteModal();
+      this.notificationService.addNotification({
+        title: 'Student Deleted',
+        message: `${name} has been removed from records`,
+        type: 'error',
+        read: false,
+        icon: 'bi-trash-fill'
+      });
+      this.showSuccessMessage('Student Deleted!', `${name} has been removed from records`, 'bi-trash-fill');
     });
   }
 

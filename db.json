@@ -65,11 +65,22 @@
       "address": "islamabad",
       "admissionDate": "2025-11-18",
       "feeStatus": "pending"
+    },
+    {
+      "id": "f40c",
+      "name": "Muhammad Shahab",
+      "fatherName": "Azmat Khan",
+      "class": "7-A",
+      "rollNumber": "120",
+      "phone": "0331-8877571",
+      "address": "Dhoda Kohat",
+      "admissionDate": "2025-11-21",
+      "feeStatus": "pending"
     }
   ],
   "fees": [
     {
-      "id": 1,
+      "id": "1",
       "studentId": 1,
       "studentName": "Ahmed Ali",
       "class": "10-A",
@@ -83,7 +94,7 @@
       "dueDate": "2024-12-05"
     },
     {
-      "id": 2,
+      "id": "2",
       "studentId": 2,
       "studentName": "Sara Khan",
       "class": "9-B",
@@ -97,7 +108,7 @@
       "dueDate": "2024-11-05"
     },
     {
-      "id": 3,
+      "id": "3",
       "studentId": 3,
       "studentName": "Fatima Noor",
       "class": "10-A",
@@ -111,7 +122,7 @@
       "dueDate": "2024-12-05"
     },
     {
-      "id": 4,
+      "id": "4",
       "studentId": 4,
       "studentName": "Hassan Raza",
       "class": "8-C",
@@ -125,7 +136,7 @@
       "dueDate": "2024-11-05"
     },
     {
-      "id": 5,
+      "id": "5",
       "studentId": 5,
       "studentName": "Ayesha Malik",
       "class": "9-A",
@@ -141,7 +152,7 @@
   ],
   "attendance": [
     {
-      "id": 1,
+      "id": "1",
       "date": "2024-11-18",
       "studentId": 1,
       "studentName": "Ahmed Ali",
@@ -151,7 +162,7 @@
       "remarks": ""
     },
     {
-      "id": 2,
+      "id": "2",
       "date": "2024-11-18",
       "studentId": 2,
       "studentName": "Sara Khan",
@@ -161,7 +172,7 @@
       "remarks": ""
     },
     {
-      "id": 3,
+      "id": "3",
       "date": "2024-11-18",
       "studentId": 3,
       "studentName": "Fatima Noor",
@@ -171,7 +182,7 @@
       "remarks": "Sick leave"
     },
     {
-      "id": 4,
+      "id": "4",
       "date": "2024-11-18",
       "studentId": 4,
       "studentName": "Hassan Raza",
@@ -181,7 +192,7 @@
       "remarks": ""
     },
     {
-      "id": 5,
+      "id": "5",
       "date": "2024-11-18",
       "studentId": 5,
       "studentName": "Ayesha Malik",
@@ -249,11 +260,61 @@
       "status": "absent",
       "markedBy": "Admin User",
       "remarks": ""
+    },
+    {
+      "id": "d287",
+      "date": "2025-11-20",
+      "studentId": "1",
+      "studentName": "Ahmed Ali",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Regular User",
+      "remarks": ""
+    },
+    {
+      "id": "04b4",
+      "date": "2025-11-20",
+      "studentId": "2",
+      "studentName": "Sara Khan",
+      "class": "9-B",
+      "status": "absent",
+      "markedBy": "Regular User",
+      "remarks": ""
+    },
+    {
+      "id": "9b50",
+      "date": "2025-11-20",
+      "studentId": "6237",
+      "studentName": "Muhammad Sajjad",
+      "class": "10-C",
+      "status": "late",
+      "markedBy": "Regular User",
+      "remarks": ""
+    },
+    {
+      "id": "a445",
+      "date": "2025-11-20",
+      "studentId": "3",
+      "studentName": "Fatima Noor",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Regular User",
+      "remarks": ""
+    },
+    {
+      "id": "b2ee",
+      "date": "2025-11-21",
+      "studentId": "5",
+      "studentName": "Ayesha Malik",
+      "class": "9-A",
+      "status": "present",
+      "markedBy": "Manager User",
+      "remarks": ""
     }
   ],
   "classes": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Class 10-A",
       "grade": "10",
       "section": "A",
@@ -265,7 +326,7 @@
       "status": "active"
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Class 9-B",
       "grade": "9",
       "section": "B",
@@ -277,7 +338,7 @@
       "status": "active"
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Class 10-B",
       "grade": "10",
       "section": "B",
@@ -289,7 +350,7 @@
       "status": "active"
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Class 8-C",
       "grade": "8",
       "section": "C",
@@ -301,7 +362,7 @@
       "status": "active"
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Class 9-A",
       "grade": "9",
       "section": "A",
@@ -432,6 +493,17 @@
       "role": "guest",
       "permissions": [
         "read"
+      ]
+    },
+    {
+      "id": "f84c",
+      "email": "shahab@gmail.com",
+      "password": "shahab123",
+      "name": "Muhammad Shahab",
+      "role": "user",
+      "permissions": [
+        "read",
+        "write"
       ]
     }
   ]

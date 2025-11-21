@@ -2,22 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../../services/auth';
 import { NotificationService, Notification } from '../../../services/notification';
-
-interface Class {
-  id: number;
-  name: string;
-  grade: string;
-  section: string;
-  classTeacher: string;
-  subject: string;
-  room: string;
-  totalStudents: number;
-  schedule: string;
-  status: 'active' | 'inactive';
-}
+import { ClassService, Class } from '../../../services/class.service';
 
 @Component({
   selector: 'app-classes',
@@ -73,13 +60,11 @@ export class Classes implements OnInit {
     status: 'active'
   };
 
-  private apiUrl = 'http://localhost:3000/classes';
-
   constructor(
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private http: HttpClient
+    private classService: ClassService
   ) {}
 
   ngOnInit(): void {
@@ -95,7 +80,7 @@ export class Classes implements OnInit {
   }
 
   loadClasses(): void {
-    this.http.get<Class[]>(this.apiUrl).subscribe({
+    this.classService.getAll().subscribe({
       next: (data) => {
         this.classes = data;
         this.filteredClasses = [...this.classes];
@@ -154,7 +139,7 @@ export class Classes implements OnInit {
     const className = this.newClass.name;
     const { id, ...classData } = this.newClass;
 
-    this.http.post<Class>(this.apiUrl, classData).subscribe({
+    this.classService.create(classData).subscribe({
       next: (savedClass) => {
         this.classes.push(savedClass);
         this.filteredClasses = [...this.classes];
@@ -208,7 +193,7 @@ export class Classes implements OnInit {
 
     const className = this.editClass.name;
 
-    this.http.put<Class>(`${this.apiUrl}/${this.editClass.id}`, this.editClass).subscribe({
+    this.classService.update(this.editClass.id, this.editClass).subscribe({
       next: (updatedClass) => {
         const index = this.classes.findIndex(c => c.id === this.editClass.id);
         if (index !== -1) {
@@ -255,7 +240,7 @@ export class Classes implements OnInit {
 
     const cls = this.classToDelete;
 
-    this.http.delete(`${this.apiUrl}/${cls.id}`).subscribe({
+    this.classService.delete(cls.id).subscribe({
       next: () => {
         this.classes = this.classes.filter(c => c.id !== cls.id);
         this.filteredClasses = this.filteredClasses.filter(c => c.id !== cls.id);
