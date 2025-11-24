@@ -310,6 +310,76 @@
       "status": "present",
       "markedBy": "Manager User",
       "remarks": ""
+    },
+    {
+      "id": "62a9",
+      "date": "2025-11-24",
+      "studentId": "1",
+      "studentName": "Ahmed Ali",
+      "class": "10-A",
+      "status": "absent",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "f8ba",
+      "date": "2025-11-24",
+      "studentId": "6237",
+      "studentName": "Muhammad Sajjad",
+      "class": "10-C",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "69f7",
+      "date": "2025-11-24",
+      "studentId": "3",
+      "studentName": "Fatima Noor",
+      "class": "10-A",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "6b24",
+      "date": "2025-11-24",
+      "studentId": "5",
+      "studentName": "Ayesha Malik",
+      "class": "9-A",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "989b",
+      "date": "2025-11-24",
+      "studentId": "4",
+      "studentName": "Hassan Raza",
+      "class": "8-C",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "1298",
+      "date": "2025-11-24",
+      "studentId": "f40c",
+      "studentName": "Muhammad Shahab",
+      "class": "7-A",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
+    },
+    {
+      "id": "7825",
+      "date": "2025-11-24",
+      "studentId": "2",
+      "studentName": "Sara Khan",
+      "class": "9-B",
+      "status": "present",
+      "markedBy": "Admin User",
+      "remarks": ""
     }
   ],
   "classes": [
