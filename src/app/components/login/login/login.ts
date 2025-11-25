@@ -1,117 +1,64 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth';
 
-
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
-  // Form data variables
-  email: string = '';
-  password: string = '';
-  rememberMe: boolean = false;
-  showPassword: boolean = false;
-
-  // Error messages
-  emailError: string = '';
-  passwordError: string = '';
+export class Login implements OnInit {
+  loginForm!: FormGroup;
+  showPassword = false;
 
   constructor(
+    private fb: FormBuilder,
     private router: Router,
     private authService: AuthService
-  ) {
-    console.log('LoginComponent initialized');
+  ) {}
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false]
+    });
   }
 
-  // Toggle password visibility
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  // Validate email format
-  validateEmail(): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!this.email) {
-      this.emailError = 'Email is required';
-      return false;
-    } else if (!emailPattern.test(this.email)) {
-      this.emailError = 'Please enter a valid email';
-      return false;
-    } else {
-      this.emailError = '';
-      return true;
-    }
-  }
-
-  // Validate password
-  validatePassword(): boolean {
-    if (!this.password) {
-      this.passwordError = 'Password is required';
-      return false;
-    } else if (this.password.length < 6) {
-      this.passwordError = 'Password must be at least 6 characters';
-      return false;
-    } else {
-      this.passwordError = '';
-      return true;
-    }
-  }
-
-  // Handle form submission
   onSubmit(): void {
-    console.log('=== LOGIN BUTTON CLICKED ===');
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-    
-    // Simple validation - just check if fields are not empty
-    if (!this.email || !this.password) {
-      alert('Please enter both email and password');
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
-    
-    // Login via AuthService (now returns Observable)
-    this.authService.login(this.email, this.password).subscribe({
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
       next: (user) => {
         if (user) {
-          console.log('✅ Login successful');
-          alert(`Welcome ${user.name}! You are logged in as ${user.role.toUpperCase()}.`);
-          
-          // Check if there's a redirect URL (from auth guard)
           const redirectUrl = sessionStorage.getItem('redirectUrl') || '/dashboard';
           sessionStorage.removeItem('redirectUrl');
-          
-          // Navigate to redirect URL or dashboard
-          this.router.navigate([redirectUrl]).then(
-            (success) => console.log('Navigation success:', success),
-            (error) => console.error('Navigation error:', error)
-          );
+          this.router.navigate([redirectUrl]);
         } else {
-          console.log('❌ Login failed');
-          alert('Login failed. Invalid email or password.');
+          alert('Invalid email or password');
         }
       },
-      error: (error) => {
-        console.error('❌ Login error:', error);
-        alert('Login error. Please try again.');
-      }
+      error: () => alert('Login error. Please try again.')
     });
   }
 
-  // Navigate to forgot password page
-  onForgotPassword(): void {
-    console.log('Forgot password clicked');
-    // this.router.navigate(['/forgot-password']);
-  }
-
-  // Navigate to signup page
   onSignUp(): void {
-    console.log('Sign up clicked');
     this.router.navigate(['/signup']);
   }
+
+  // Helper methods for template
+  get email() { return this.loginForm.get('email'); }
+  get password() { return this.loginForm.get('password'); }
 }

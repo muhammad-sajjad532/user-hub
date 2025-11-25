@@ -10,7 +10,7 @@
       </div>
 
       <!-- Login Form -->
-      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         
         <!-- Email Field -->
         <div class="form-group">
@@ -20,15 +20,13 @@
           <input
             type="email"
             id="email"
-            name="email"
+            formControlName="email"
             class="form-control"
             placeholder="Enter email"
-            [(ngModel)]="email"
-            (blur)="validateEmail()"
-            required
           />
-          <div class="error-message" *ngIf="emailError">
-            {{ emailError }}
+          <div class="error-message" *ngIf="email?.invalid && email?.touched">
+            <span *ngIf="email?.errors?.['required']">Email is required</span>
+            <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
           </div>
         </div>
 
@@ -41,12 +39,9 @@
             <input
               [type]="showPassword ? 'text' : 'password'"
               id="password"
-              name="password"
+              formControlName="password"
               class="form-control"
-              placeholder="Enter one time password"
-              [(ngModel)]="password"
-              (blur)="validatePassword()"
-              required
+              placeholder="Enter password"
             />
             <button
               type="button"
@@ -57,29 +52,26 @@
               <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
             </button>
           </div>
-          <div class="error-message" *ngIf="passwordError">
-            {{ passwordError }}
+          <div class="error-message" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Password is required</span>
+            <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
           </div>
         </div>
 
-        <!-- Remember Me & Forgot Password -->
+        <!-- Remember Me -->
         <div class="form-options">
           <div class="remember-me">
             <input
               type="checkbox"
               id="rememberMe"
-              name="rememberMe"
-              [(ngModel)]="rememberMe"
+              formControlName="rememberMe"
             />
             <label for="rememberMe">Remember me</label>
           </div>
-          <a href="javascript:void(0)" class="forgot-password" (click)="onForgotPassword()">
-            Forgot Password?
-          </a>
         </div>
 
         <!-- Login Button -->
-        <button type="submit" class="btn btn-login">
+        <button type="submit" class="btn btn-login" [disabled]="loginForm.invalid">
           Login
         </button>
 
